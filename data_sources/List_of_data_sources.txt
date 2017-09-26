@@ -1,0 +1,41 @@
+Data Resources
+
+Google Maps API docs:
+
+WalkScore API docs: https://www.walkscore.com/professional/api.php
+
+Yelp API docs: https://www.yelp.com/developers/documentation/v2/overview
+
+SF Neighborhood Tracts (unofficial): https://data.sfgov.org/Geographic-Locations-and-Boundaries/Analysis-Neighborhoods/p5b7-5n3h
+
+SF Parks and Open Spaces: https://data.sfgov.org/Culture-and-Recreation/Park-and-Open-Space-Map/4udc-s3pr#Export
+                          https://dev.socrata.com/foundry/data.sfgov.org/94uf-amnx
+
+SF Neighborhood Watch Groups: https://www.google.com/maps/d/viewer?mid=1NN359j_P-d-qEypecGQLTOiK9Bk&ll=37.74705489317911%2C-122.40408597480473&z=12
+                              https://sfsafe.org/neighborhood-watch/
+                              
+SF Map of Police Department Incidents: https://data.sfgov.org/Public-Safety/Map-of-Police-Department-Incidents/
+                                       https://dev.socrata.com/foundry/brigades.opendatanetwork.com/u4cw-q86b
+
+U.S. Census Data: https://www.opendatanetwork.com/dataset/data.sfgov.org/d53k-r35r
+
+SF Crimespotting: http://sanfrancisco.crimespotting.org/api
+
+SF Building Data: https://dev.socrata.com/foundry/data.opendatanetwork.com/igjy-7nxp
+                  https://www.opendatanetwork.com/dataset/data.opendatanetwork.com/3u6t-mu9r
+
+SF Community Resiliency Indicator System: https://www.opendatanetwork.com/dataset/data.sfgov.org/banc-xdvr
+
+SF Active Business Locations: https://www.opendatanetwork.com/dataset/data.sfgov.org/kvj8-g7jh
+
+SF Active Street Use Permits: https://www.opendatanetwork.com/dataset/data.sfgov.org/vpdg-4ask
+
+SF Map of Schools: https://www.opendatanetwork.com/dataset/data.sfgov.org/qb37-w9se
+
+SF Mobile Food Truck Locations: https://www.opendatanetwork.com/dataset/data.sfgov.org/px6q-wjh5
+
+SF Plant Database (awesome to see what plants are recommended for each neighborhood): https://www.opendatanetwork.com/dataset/data.sfgov.org/27u4-a5b3
+
+Meetup API for local meetups numbers
+
+Google API for search analysis...

@@ -1,0 +1,16 @@
+MVP Features:
+Interactive map (Google Maps or Mapbox with Leaflet JS library) with input for address in SF
+Geospatial data overlay that will be used to calculate score (2-3 metrics)
+City of San Francisco APIs
+WalkScore API
+NextDoor API
+Framework to add more data metrics in the future
+Create a database that I can make SQL queries to
+Calculate weighted score for address
+
+2.0 Features:
+Ability to add work address to incorporate commute time
+Ability to add more neighborhood data metrics
+Allow user to prioritize metrics to customize neighborhood score
+Add data analytics visuals (using Pandas library, possibly Plotly, D3)
+Log-in that lets user save results
