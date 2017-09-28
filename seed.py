@@ -2,78 +2,83 @@
 """Utility file to seed community score database from various sources"""
 
 from sqlalchemy import func
-from model import connect_to_db, db, #<import classes>
+from model import connect_to_db, db, Address, User, Category #<import classes>
 from datetime import datetime
 from server import app
+from json import loads
+from random import randint
+
+def load_addresses():
+    """Load mock addresses into database."""
+
+    print 'Addresses'
+    Address.query.delete()
+
+    filename = open("seed_data/addresses.json")
+    address_list = loads(filename.read())
+
+    for address in address_list:
+        print address
+        addy_id = address['addy_id'],
+        lat = address['lat'],
+        lng = address['lng'],
+        add_line1 = address['line1'],
+        add_line2 = address['line2'],
+        city = address['city'],
+        zipcode = address['zipcode']
+
+        address = Address(addy_id=addy_id, lat=lat, lng=lng, add_line1=add_line1,
+                          add_line2=add_line2, city=city, zipcode=zipcode)
+
+        db.session.add(address)
+
+    db.session.commit()
+    filename.close()
 
 
-def load_neighborhood_boundaries():
-    """Load GeoJSON file of neighborhood boundaries within San Francisco."""
+def load_users():
+    """Load mock users into database."""
 
     print "Users"
-
-    # Delete all rows in table, so if we need to run this a second time,
-    # we won't be trying to add duplicate users
     User.query.delete()
 
-    # Read u.user file and insert data
-    for row in open("seed_data/u.user"):
-        row = row.rstrip()
-        user_id, age, gender, occupation, zipcode = row.split("|")
+    filename = open("seed_data/users.json")
+    users_list = loads(filename.read())
 
-        user = User(user_id=user_id,
-                    age=age,
-                    zipcode=zipcode)
+    for user in users_list:
+        print user
+        user_id = user['user_id']
+        name = user['name']
+        email = user['email']
+        password = user['password']
+        addy_id = randint(1, 100)
 
-        # We need to add to the session or it won't ever be stored
+        user = User(user_id=user_id, name=name, email=email, password=password,
+                    addy_id=addy_id)
+
         db.session.add(user)
 
-
-    # Once we're done, we should commit our work
     db.session.commit()
+    filename.close()
 
 
-def load_movies():
-    """Load movies from u.item into database."""
+def load_categories():
+    """Load mock categories into database."""
 
-    print 'Movies'
-    Movie.query.delete()
+    print "Categories"
+    Category.query.delete()
 
-    for row in open("seed_data/u.item"):
-        row = row.rstrip()
-        clean = row.split("|")
-        if clean[1] == "unknown":
-            next
-        else:
-            date = datetime.strptime(clean[2], '%d-%b-%Y').date()
-            movie = Movie(movie_id=clean[0],
-                          title=clean[1][:-7],
-                          released_at=date,
-                          imdb_url=clean[4])
-            #how do we get rid of the HH:MM from the timestamp?
-        db.session.add(movie)
+    cat_dict = {party:"parties", fest:"festivals", music:"concerts",
+                       book:"book clubs", sport:"sports and recreation activities"}
+
+    for category in cat_dict.keys():
+        cat_row = Category(cat_id=category, description=cat_dict[category])
+        db.session.add(cat_row)
 
     db.session.commit()
+    
 
-def load_ratings():
-    """Load ratings from u.data into database."""
-
-    print "Ratings"
-
-    Rating.query.delete()
-
-    for row in open("seed_data/u.data"):
-        print row
-        user_id, movie_id, score, timestamp = row.split()
-
-        rating = Rating(user_id=user_id,
-                        movie_id=movie_id,
-                        score=score)
-
-        db.session.add(rating)
-
-    db.session.commit()
-
+# Helper function
 def set_val_user_id():
     """Set value for the next user_id after seeding database"""
 
@@ -94,7 +99,5 @@ if __name__ == "__main__":
     db.create_all()
 
     # Import different types of data
-    load_users()
-    load_movies()
-    load_ratings()
-    set_val_user_id()
+    load_addresses()
+    # set_val_user_id()

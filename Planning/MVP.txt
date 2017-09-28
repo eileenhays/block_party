@@ -1,16 +1,90 @@
-MVP Features:
-Interactive map (Google Maps or Mapbox with Leaflet JS library) with input for address in SF
-Geospatial data overlay that will be used to calculate score (2-3 metrics)
-City of San Francisco APIs
-WalkScore API
-NextDoor API
-Framework to add more data metrics in the future
-Create a database that I can make SQL queries to
-Calculate weighted score for address
+Updated: 9/27/17
 
-2.0 Features:
-Ability to add work address to incorporate commute time
-Ability to add more neighborhood data metrics
-Allow user to prioritize metrics to customize neighborhood score
-Add data analytics visuals (using Pandas library, possibly Plotly, D3)
-Log-in that lets user save results
+Project Description and Goals:
+A web app will enables users to engage with their community through real social interaction with their neighbors. The user will be able to input an address and will interactively showcase dynamic events in their neighborhood on a map.
+
+User stories:
+* I can input an address into Google Maps and it will show a marker.
+* I will be able to see upcoming local events with a marker on Google Maps.
+* I will be able to see more information about an event by clicking on a marker.
+* I can search for other addresses.
+* I can register and login to my profile page.
+* I can reset my password.
+* I can save my address on my profile for later use.
+* I can favorite an event on my profile for later viewing. 
+2.0
+* I can add an event to my calendar.
+* I can change the radius of my search from .5 mi up to 5 mi.
+* I can search for events for a specific time period in the future.
+* I won’t see old or expired events in favorites.
+* I can add my own events.
+* I will be able to invite my neighbors.
+* I can see recommendations of events to attend.
+* I can see more information about my community.
+
+Tech and Stack:
+  Backend:
+* Python, Flask, Jinja, SQLAlchemy, PostgreSQL, passlib (encryption & verification).
+* Machine learning??
+
+  Frontend:
+* JavaScript, jQuery, AJAX
+* HTML5, CSS3, Twitter Bootstrap (HTML/CSS/JS framework),
+
+  APIs:
+* Google Maps Javascript API
+* Meetup
+* Eventbrite?
+* Facebook events? https://github.com/tobilg/facebook-events-by-location
+* Volunteer Match
+
+Additional Data:
+* Parks: community gardens (SF Open Data)
+
+MVP
+[x] Initial project planning doc (this one!)
+[x] User flow
+[x] Data model
+[x] Wireframes
+[ ] Google Maps on main page
+[ ] Ability to search for an address
+[ ] Ability to search for another address (search bar on main page)
+[ ] Show a marker for an address
+[ ] Make a successful call to Meetup API that filters by distance and a week out
+[ ] Model.py
+[ ] Markers for each event call
+[ ] Create a radius shape on map that greys out things outside of it
+[ ] Add info boxes that have more info when markers are clicked on
+
+2.0 Features
+[ ] Create registration, login/logout
+[ ] Profile page
+[ ] Save address to database
+[ ] Save favorite events
+[ ] Password reset
+[ ] Password encryption
+[ ] Add an event to calendar
+[ ] Change the radius of search, and radius of circle shape
+[ ] Search for events for a specific time period
+[ ] Remove of delete old or expired events in favorites
+[ ] User-added events
+[ ] Neighbor invites
+[ ] Recommender system
+[ ] Add volunteer events
+[ ] Add community gardens
+[ ] Add neighborhood watch/group meetings
+[ ] Templates for hosting community event
+[ ] Petition (like change.org) for community improvement
+[ ] Data visualizations on community
+[ ] Make pretty
+
+
+Other opportunities to consider for later:
+* OAuth for security and to sign into FB
+* Allow use to post their own events to FB
+* Feature other communal opportunities:
+    * community gardens within their vicinity
+    * volunteer match opportunities
+    * block parties
+    * town hall meetings
+    * join community orgs or neighborhood watch group

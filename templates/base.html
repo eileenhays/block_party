@@ -2,38 +2,14 @@
 <html>
 <head>
     <title>{% block title %}TITLE GOES HERE{% endblock %}</title>
-    <!-- Link to css should be changed. -->
-    <!-- <link rel="stylesheet" href="/static/css/styles.css"> -->
-    <!-- <link rel="stylesheet" href="/maps/documentation/javascript/demos/demos.css">
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <ul class=flashes>
-        {% for message in messages %}
-          {{ message }}
-        {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %} -->
-    <meta name="viewport" content="initial-scale=1.0">
-    <meta charset="utf-8">
-    <style>
-      /* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
-      #map {
-        height: 100%;
-      }
-      /* Optional: Makes the sample page fill the window. */
-      html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
-    </style>
+
+    {% block head %}{% endblock %}
 </head>
 
 <body>
 
     {% block content %} put you content here {% endblock %}
+    {% block page_js %}{% endblock %}
 
 
 </body>
