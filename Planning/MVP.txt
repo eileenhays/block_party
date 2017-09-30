@@ -1,63 +1,67 @@
-Updated: 9/27/17
+Updated: 9/29/17
 
-Project Description and Goals:
-A web app will enables users to engage with their community through real social interaction with their neighbors. The user will be able to input an address and will interactively showcase dynamic events in their neighborhood on a map.
-
-User stories:
-* I can input an address into Google Maps and it will show a marker.
-* I will be able to see upcoming local events with a marker on Google Maps.
-* I will be able to see more information about an event by clicking on a marker.
+Project Description and Goals: 
+A web app will enables users to engage with their community through real social interaction with their neighbors. The user will be able to input an address and will interactively showcase dynamic events in their neighborhood on a map. 
+  
+User stories: 
+* I can input an address into Google Maps and it will show a marker. 
+* I will be able to see upcoming local events with a marker on Google Maps. 
+* I will be able to see more information about an event by clicking on a marker. 
 * I can search for other addresses.
-* I can register and login to my profile page.
-* I can reset my password.
-* I can save my address on my profile for later use.
+* I can register and login to my profile page. 
+* I can reset my password. 
+* I can save my address on my profile for later use. 
 * I can favorite an event on my profile for later viewing. 
-2.0
-* I can add an event to my calendar.
+2.0 
+* I can add an event to my calendar. 
 * I can change the radius of my search from .5 mi up to 5 mi.
-* I can search for events for a specific time period in the future.
-* I won’t see old or expired events in favorites.
-* I can add my own events.
+* I can search for events for a specific time period in the future. 
+* I won’t see old or expired events in favorites. 
+* I can add my own events. 
 * I will be able to invite my neighbors.
-* I can see recommendations of events to attend.
+* I can see recommendations of events to attend.  
 * I can see more information about my community.
 
-Tech and Stack:
-  Backend:
+Tech and Stack: 
+  Backend: 
 * Python, Flask, Jinja, SQLAlchemy, PostgreSQL, passlib (encryption & verification).
 * Machine learning??
 
-  Frontend:
+  Frontend: 
 * JavaScript, jQuery, AJAX
 * HTML5, CSS3, Twitter Bootstrap (HTML/CSS/JS framework),
 
-  APIs:
+  APIs: 
 * Google Maps Javascript API
-* Meetup
-* Eventbrite?
+* Meetup 
+* Eventbrite? 
 * Facebook events? https://github.com/tobilg/facebook-events-by-location
 * Volunteer Match
 
-Additional Data:
-* Parks: community gardens (SF Open Data)
+Additional Data: 
+* Parks: community gardens (SF Open Data) 
 
 MVP
 [x] Initial project planning doc (this one!)
 [x] User flow
 [x] Data model
 [x] Wireframes
-[ ] Google Maps on main page
+[x] Google Maps on main page
+[x] Add address search box to map
 [ ] Ability to search for an address
-[ ] Ability to search for another address (search bar on main page)
-[ ] Show a marker for an address
-[ ] Make a successful call to Meetup API that filters by distance and a week out
-[ ] Model.py
+[ ] Ability to save address to profile
+[x] Show a marker for an address
+[x] Make a successful call to Meetup API that filters by distance 
+[x] Model.py
+[ ] Convert time into human readable
 [ ] Markers for each event call
 [ ] Create a radius shape on map that greys out things outside of it
 [ ] Add info boxes that have more info when markers are clicked on
+[ ] Add geolocation
 
 2.0 Features
 [ ] Create registration, login/logout
+[ ] Change look of markers
 [ ] Profile page
 [ ] Save address to database
 [ ] Save favorite events
@@ -68,7 +72,7 @@ MVP
 [ ] Search for events for a specific time period
 [ ] Remove of delete old or expired events in favorites
 [ ] User-added events
-[ ] Neighbor invites
+[ ] Neighbor invites 
 [ ] Recommender system
 [ ] Add volunteer events
 [ ] Add community gardens
@@ -79,7 +83,7 @@ MVP
 [ ] Make pretty
 
 
-Other opportunities to consider for later:
+Other opportunities to consider for later: 
 * OAuth for security and to sign into FB
 * Allow use to post their own events to FB
 * Feature other communal opportunities:
@@ -87,4 +91,4 @@ Other opportunities to consider for later:
     * volunteer match opportunities
     * block parties
     * town hall meetings
-    * join community orgs or neighborhood watch group
+    * join community orgs or neighborhood watch group  

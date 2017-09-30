@@ -53,13 +53,52 @@ class Category(db.Model):
     __tablename__ = 'categories'
 
     cat_id = db.Column(db.String(5), primary_key=True, unique=True)
-    description = db.Column(db.String(50), nullable=False)
+    name = db.Column(db.String(50), nullable=False, unique=True) 
+    description = db.Column(db.String(100), nullable=False, unique=True)
 
     def __repr__(self):
         """Prints category object in a more helpful way"""
 
-        return "<Category: cat_id=%s description=%s>" % (self.cat_id,
-                                                  self.description)
+        return "<Category: cat_id=%s name=%s>" % (self.cat_id,
+                                                  self.name)
+
+
+class Saved_event(db.Model):
+    """Event information saved by user."""
+
+    __tablename__ = 'saved_events'
+
+    evt_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    datetime = db.Column(db.Datetime, nullable=False)
+    name = db.Column(db.String(150), nullable=False)
+    url = db.Column(db.String(500), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    addy_id = db.Column(db.Integer, db.ForeignKey('addresses.addy_id'), nullable=False)
+    catevt_id = db.Column(db.Integer, db.ForeignKey('cat_events.catevt_id'), nullable=True)    
+
+    def __repr__(self):
+        """Prints saved_location object in a more helpful way"""
+
+        return "<Saved_events: evt_id=%s user_id=%s addy_id=%s>" % (self.evt_id,
+                                                                    self.user_id,
+                                                                    self.addy_id)  
+
+
+class Category_events(db.Model):
+    """Association table for categories and saved_events."""
+
+    __tablename__ = 'categories_events'
+
+    catevt_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    evt_id = db.Column(db.Integer, db.ForeignKey('saved_events.evt_id'), nullable=False)
+    cat_id = db.Column(db.Integer, db.ForeignKey('categories.cat_id'), nullable=True) 
+
+    def __repr__(self):
+        """Prints categories_events object in a more helpful way"""
+
+        return "<Category_events: catevt_id=%s evt_id=%s cat_id=%s>" % (self.cat_id,
+                                                                        self.evt_id, 
+                                                                        self.cat_id)      
 #
 #
 # class Neighborhood_geometry(db.Model):
@@ -82,28 +121,6 @@ class Category(db.Model):
 #                                                                    self.nhood_id)
 #
 #
-
-#
-#
-# class Saved_location(db.Model):
-#     """Location information saved by user to use on the community score site."""
-#
-#     __tablename__ = 'saved_locs'
-#
-#     saved_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-#     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
-#     add_id = db.Column(db.Integer, db.ForeignKey('addresses.add_id'), nullable=False)
-#     nhood_id = db.Column(db.Integer, db.ForeignKey('addresses.add_id'), nullable=False)
-#
-#     def __repr__(self):
-#         """Prints saved_location object in a more helpful way"""
-#
-#         return "<Saved_location: saved_id=%s user_id=%s add_id=%s>" % (self.saved_id,
-#                                                                        self.user_id,
-#                                                                        self.add_id)
-
-
-
 
 ##############################################################################
 # Helper functions

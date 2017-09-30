@@ -51,7 +51,8 @@ def load_users():
         name = user['name']
         email = user['email']
         password = user['password']
-        addy_id = randint(1, 100)
+        # addy_id = randint(1, 100)
+        addy_id = 5
 
         user = User(user_id=user_id, name=name, email=email, password=password,
                     addy_id=addy_id)
@@ -68,15 +69,18 @@ def load_categories():
     print "Categories"
     Category.query.delete()
 
-    cat_dict = {party:"parties", fest:"festivals", music:"concerts",
-                       book:"book clubs", sport:"sports and recreation activities"}
+    cat_dict = {"party":"parties", "fest":"festivals", "music":"concerts",
+                       "book":"book clubs", "sport":"sports and recreation activities"}
 
     for category in cat_dict.keys():
         cat_row = Category(cat_id=category, description=cat_dict[category])
         db.session.add(cat_row)
 
     db.session.commit()
-    
+
+
+
+
 
 # Helper function
 def set_val_user_id():
@@ -100,4 +104,6 @@ if __name__ == "__main__":
 
     # Import different types of data
     load_addresses()
+    load_users()
+    load_categories()
     # set_val_user_id()

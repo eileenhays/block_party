@@ -7,12 +7,19 @@ from flask import (Flask, jsonify, render_template, redirect, request,
 from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, db #<import classes>
+#libraries for API requests
+from sys import argv
+from pprint import pprint, pformat
 import os
+import requests
+import json
+
 
 app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
 app.secret_key = "ABC"
+api_key = os.environ.get('MEETUP_API_KEY')
 
 # Normally, if you use an undefined variable in Jinja2, it fails
 # silently. This is horrible. Fix this so that, instead, it raises an
@@ -24,87 +31,63 @@ app.jinja_env.undefined = StrictUndefined
 def index():
     """Homepage with map."""
 
-    return render_template("map.html")
+    return render_template("homepage.html")
 
 
-# @app.route("/users/<user_id>")
-# def load_user_profile(user_id):
-#     """Returning details for specific user:
-#         Name
-#         Email
-#         Link to addresses saved
-#     """
-#     pass
-#
-#     user = User.query.filter_by(user_id=user_id).one()
-#
-#     return render_template("", user=user)
-#
-#
-# @app.route("/calculate_score")
-# def calculate_score():
-#     """Calculates community score"""
-#     pass
-#
-#
-# @app.route("/registration")
-# def show_registration():
-#     """Shows registration form."""
-#     pass
-#     return render_template(".html")
-#
-#
-# @app.route("/user-data", methods=["POST"])
-# def new_user():
-#     """Register new user and input into database."""
-#     pass
-#     email = request.form.get("email")
-#     password = request.form.get("password")
-#
-#     if User.query.filter_by(email=email).first() is not None:
-#         return "There was already an account registered by this email."
-#
-#     user = User(email=email, password=password)
-#     db.session.add(user)
-#     db.session.commit()
-#
-#     return redirect("/")
-#
-#
-# @app.route("/log-in")
-# def show_login():
-#     """Shows Log-in form."""
-#     pass
-#     return render_template(".html")
-#
-#
-# @app.route("/handle-log-in", methods=["POST"])
-# def handles_login():
-#     """Checks email against password in database and fetches user_id for Flask
-#     session.
-#     """
-#     pass
-#     curr_email = request.form.get("email")
-#     curr_password = request.form.get("password")
-#
-#     db_user = User.query.filter_by(email=curr_email).first()
-#     db_password = db_user.password
-#     db_user_id = db_user.user_id
-#
-#     if db_user is not None and curr_password == db_password:
-#         session['user_id'] = db_user_id
-#         flash("Successfully logged in!")
-#         print session
-#         return redirect("/users/" + str(db_user_id))
-#     else:
-#         flash("Wrong password!")
-#         return redirect("/log-in")
-#
-#
-# @app.route("/log-out")
-# def handles_logout():
-#     """Logs user out."""
-#     pass
+@app.route('/search-events')
+def search_for_events():
+    """Request events from Meetup API given location."""
+
+    set_radius = 1 #default distance in mile(s) from location
+    # lat = request.args.get('latitude')
+    # lng = request.args.get('longitude')
+    lat = 37.7893921
+    lng = -122.4099426
+
+    payload = {'key': api_key, 'sign': 'true', 'photo-host': 'public',
+               'lat': lat, 'lon': lng, 'radius': set_radius,
+               'page': 3}
+    url = 'https://api.meetup.com/2/open_events'
+    response = requests.get(url, params=payload)
+    data = response.json()
+    event_list = search_events(data)
+
+    return render_template("map.html", event_list=event_list)
+
+@app.route('/render-test')
+def render_test_template():
+    """Renders the test.html file for testing purposes."""
+
+    return render_template('test.html')
+
+
+#******************* HELPER METHODS ****************************
+def search_events(data):
+    """"Parses out relevant data from the Meetup API response.
+    Name, description, url, lat, long, and rsvp_num."""
+
+    events_list = data['results']
+
+    map_events = []
+
+    for event in events_list:
+        event_dict = {}
+        event_dict['name'] = event['name']
+        event_dict['description'] = event['description']
+        event_dict['time'] = event['time']
+        event_dict['utc_offset'] = event['utc_offset']    
+        event_dict['url'] = event['event_url']
+        if 'venue' in event:
+            event_dict['lat'] = event['venue']['lat']
+            event_dict['lng'] = event['venue']['lon']
+        else: #check if group is the actual default location
+            event_dict['lat'] = event['group']['group_lat']
+            event_dict['lng'] = event['group']['group_lon']
+        event_dict['rsvp_num'] = event['yes_rsvp_count']
+
+        map_events.append(event_dict)
+
+    return map_events
 
 
 if __name__ == "__main__":
