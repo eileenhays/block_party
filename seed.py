@@ -73,7 +73,7 @@ def load_categories():
                        "book":"book clubs", "sport":"sports and recreation activities"}
 
     for category in cat_dict.keys():
-        cat_row = Category(cat_id=category, description=cat_dict[category])
+        cat_row = Category(name=category, description=cat_dict[category])
         db.session.add(cat_row)
 
     db.session.commit()

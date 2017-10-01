@@ -52,7 +52,7 @@ class Category(db.Model):
 
     __tablename__ = 'categories'
 
-    cat_id = db.Column(db.String(5), primary_key=True, unique=True)
+    cat_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(50), nullable=False, unique=True) 
     description = db.Column(db.String(100), nullable=False, unique=True)
 
@@ -69,12 +69,12 @@ class Saved_event(db.Model):
     __tablename__ = 'saved_events'
 
     evt_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    datetime = db.Column(db.Datetime, nullable=False)
+    datetime = db.Column(db.DateTime, nullable=False)
     name = db.Column(db.String(150), nullable=False)
     url = db.Column(db.String(500), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     addy_id = db.Column(db.Integer, db.ForeignKey('addresses.addy_id'), nullable=False)
-    catevt_id = db.Column(db.Integer, db.ForeignKey('cat_events.catevt_id'), nullable=True)    
+    catevt_id = db.Column(db.Integer, db.ForeignKey('categories_events.catevt_id'), nullable=True)    
 
     def __repr__(self):
         """Prints saved_location object in a more helpful way"""
