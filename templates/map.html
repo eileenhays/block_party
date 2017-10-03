@@ -17,11 +17,15 @@
   
   <div id="events_list">
     <h2>List of Events</h2>
-      {% for event in event_list %}
-        {% for k, v in event.items() %}
-          <p>{{ k }}: {{ v }}</p>
-        {% endfor %}
+
+    {% for id, event in map_events.items() %}
+      <p>
+      {% for k, v in event.items() %}
+        {{ k }}: {{ v }}<br>
+      </p>
       {% endfor %}
+    {% endfor %}    
+
   </div>
 
 {% endblock %}
@@ -30,9 +34,8 @@
   <script src="http://code.jquery.com/jquery.js"></script>
 
   <script src="/static/js/map.js"></script>
-
-  <script async defer
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDDjuPMg8OtD5gBKHhFfHxmcNtSWocZ8AM&library=places&callback=initAutocomplete">
+  <!-- Initiates the Autocomplete after the API loads, but browser renders rest of page while API loads -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDDjuPMg8OtD5gBKHhFfHxmcNtSWocZ8AM&libraries=places&callback=initAutocomplete" async defer>
   </script>
 
 {% endblock %}
