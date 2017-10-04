@@ -1,4 +1,4 @@
-Updated: 9/29/17
+Update: 10/3/17
 
 Project Description and Goals: 
 A web app will enables users to engage with their community through real social interaction with their neighbors. The user will be able to input an address and will interactively showcase dynamic events in their neighborhood on a map. 
@@ -25,7 +25,7 @@ User stories:
 Tech and Stack: 
   Backend: 
 * Python, Flask, Jinja, SQLAlchemy, PostgreSQL, passlib (encryption & verification).
-* Machine learning??
+* Machine learning?? or predictive algorithm? maybe just add some data visualizations
 
   Frontend: 
 * JavaScript, jQuery, AJAX
@@ -36,7 +36,8 @@ Tech and Stack:
 * Meetup 
 * Eventbrite? 
 * Facebook events? https://github.com/tobilg/facebook-events-by-location
-* Volunteer Match
+* FunCheapSF API?
+* Volunteer Match?
 
 Additional Data: 
 * Parks: community gardens (SF Open Data) 
@@ -48,7 +49,7 @@ MVP
 [x] Wireframes
 [x] Google Maps on main page
 [x] Add address search box to map
-[ ] Ability to search for an address
+[x] Ability to search for an address
 [ ] Ability to save address to profile
 [x] Show a marker for an address
 [x] Make a successful call to Meetup API that filters by distance 

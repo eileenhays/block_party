@@ -12,19 +12,13 @@
 
   <h2>Awesome Community Events</h2>
 
-  <input id="pac-input" class="controls" type="text" placeholder="Enter address">
+  <input id="pac-input" class="controls" type="text" placeholder="Enter address" name="search-location">
   <div id="map"> </div>
   
   <div id="events_list">
     <h2>List of Events</h2>
 
-    {% for id, event in map_events.items() %}
-      <p>
-      {% for k, v in event.items() %}
-        {{ k }}: {{ v }}<br>
-      </p>
-      {% endfor %}
-    {% endfor %}    
+
 
   </div>
 

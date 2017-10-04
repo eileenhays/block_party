@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Homepage{% endblock %}
+
+{% block head %}
+  <link rel="stylesheet" href="/static/css/map.css">
+{% endblock %}
+
+{% block content %}
+
+  <h2>Awesome Community Events</h2>
+<!-- This form input does not work -->  
+ <input id="pac-input" class="controls" type="text" placeholder="Enter address">
+  <div id="map"> </div>
+
+{% endblock %}
+
+{% block page_js %}
+  <script src="http://code.jquery.com/jquery.js"></script>
+
+  <script>
+    var map;
+    var defLocation = {lat: 37.7893921, lng: -122.4099426}; 
+
+    // Instantiate map
+    function initMap() {
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: defLocation,
+        zoom: 13,
+      });
+
+    //   // Create a marker for address
+      var marker = new google.maps.Marker({
+        position: defLocation,
+        map: map
+      });
+    }    
+
+  </script>
+
+  <script async defer
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDDjuPMg8OtD5gBKHhFfHxmcNtSWocZ8AM&library=places&callback=initMap">
+  </script>
+
+{% endblock %}
