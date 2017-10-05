@@ -39,6 +39,7 @@ def search_for_events():
     returns a JSON with local events."""
 
     set_radius = 2 #default distance in mile(s) from location
+    num_of_results = 10
     lat = request.args.get('lat')
     lng = request.args.get('lng')
     #Use for testing purposes
@@ -48,7 +49,7 @@ def search_for_events():
 
     payload = {'key': api_key, 'sign': 'true', 'photo-host': 'public',
                'lat': lat, 'lon': lng, 'radius': set_radius,
-               'page': 3}
+               'page': num_of_results}
     url = 'https://api.meetup.com/2/open_events'
     response = requests.get(url, params=payload)
     data = response.json()
