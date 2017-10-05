@@ -26,7 +26,7 @@ def meetup_jsonify_events(data):
         else: #check if group is the actual default location
             event_dict['position']['lat'] = event['group']['group_lat']
             event_dict['position']['lng'] = event['group']['group_lon']
-
+    
         evt_id = event['id']
         map_events[evt_id] = event_dict #add each to map_events
 

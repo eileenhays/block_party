@@ -1,11 +1,9 @@
 """Community Events Server File"""
 
 from jinja2 import StrictUndefined
-
 from flask import (Flask, jsonify, render_template, redirect, request,
                    flash, session)
 from flask_debugtoolbar import DebugToolbarExtension
-
 from model import connect_to_db, db #<import classes>
 #libraries for API requests
 from sys import argv
@@ -40,9 +38,13 @@ def search_for_events():
     """Request events from Meetup API location input from user, and
     returns a JSON with local events."""
 
-    set_radius = 1 #default distance in mile(s) from location
+    set_radius = 2 #default distance in mile(s) from location
     lat = request.args.get('lat')
     lng = request.args.get('lng')
+    #Use for testing purposes
+    # lat = 37.7893921
+    # lng = -122.40775389999999
+
 
     payload = {'key': api_key, 'sign': 'true', 'photo-host': 'public',
                'lat': lat, 'lon': lng, 'radius': set_radius,
@@ -53,9 +55,6 @@ def search_for_events():
     clean_data = data_clean.meetup_jsonify_events(data)
 
     return jsonify(clean_data)
-
-
-
 
 
 if __name__ == "__main__":
