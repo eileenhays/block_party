@@ -1,13 +1,13 @@
-var map;
-var defaultLocation = {lat: 37.7749, lng: -122.4194}; 
-var markers = [];
+"use strict";
 
+var map;
+var centerSF = {lat: 37.7749, lng: -122.4194}; 
 
 // Add a search box for map that uses Autocomplete. Uses Places library. 
 
 function initAutocomplete() {
   map = new google.maps.Map(document.getElementById('map'), {
-    center: defaultLocation,
+    center: centerSF,
     zoom: 12,
     mapTypeId: 'roadmap'
   });
@@ -15,6 +15,7 @@ function initAutocomplete() {
   // Create the search box and link it to the UI element.
   var input = document.getElementById('pac-input');
   var searchBox = new google.maps.places.SearchBox(input);
+  
   map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
   // Bias the SearchBox results towards current map's viewport.
@@ -23,24 +24,29 @@ function initAutocomplete() {
   });
 
   // Sets up primary marker and searches for events with markers
-  setPrimaryMarker(map, searchBox); //How to reset with a new address?**** 
+  setPrimaryMarker(map, searchBox); //Have the searchBox listener here**** 
 
 }
 
 function setPrimaryMarker(map, searchBox) {
   // Listen for the event fired when the user selects a prediction and retrieve
   // more details for that place. Autocomplete object. 
+  var markers = [];
+  window.markers = markers; 
+
   searchBox.addListener('places_changed', function() {
     var places = searchBox.getPlaces();
     
     if (places.length == 0) {
+      console.log("That location does not exist") //flash msg
       return;
     }
     else if (places.length > 1) {
-      return console.log("Please search for one address"); //have it flash a message***
+      console.log("Requires a single address to search"); //flash msg
+      return;
     }
 
-    clearOldMarkers(markers);
+    clearOldMarkers(markers); //I think this only needs to live here if searchBox changes 
     
     console.log(places);
 
@@ -53,7 +59,6 @@ function setPrimaryMarker(map, searchBox) {
         return;
       }
 
-      // Set primary address
       var primaryIcon = {
         url: "/static/images/star_icon.svg",
         size: new google.maps.Size(71, 71),
@@ -90,25 +95,29 @@ function setPrimaryMarker(map, searchBox) {
 function searchWithPrimaryLocation(places) {
   // User input primary location to search for local events.
 
-  var primaryLocation = {};
+  var obj = {};
 
-  primaryLocation["name"] = places[0].name;
-  primaryLocation["lat"] = places[0].geometry.location.lat();
-  primaryLocation["lng"] = places[0].geometry.location.lng();            
+  obj["name"] = places[0].name;
+  obj["lat"] = places[0].geometry.location.lat();
+  obj["lng"] = places[0].geometry.location.lng();            
 
-  console.log(primaryLocation);
+  console.log(obj);
 
   // AJAX call to server to search local events with provided address
-  $.get("/search-events", 
-        primaryLocation, 
-        function(result) {
-          setEventMarkers(result, map)
-        },
-        function(error) {
-          console.log(error);
-        });
+  $.ajax({url: "/search-events", 
+          data: obj, 
+          success: function(result) {
+            console.log('hi');
+            setEventMarkers(result, map);
+          },
+          error: function(error) {
+            console.log(error);
+          }});
  }
 
+
+
+//new version
 function setEventMarkers(data, map) {
   // Event places data from server
   var eventPlaces = Object.values(data);
@@ -157,47 +166,52 @@ function clearOldMarkers(markers) {
     markers = [];
 }
 
-function addInfoWindow(marker, map) {
-  var contentString = 'div id="windowContent"' + 
-                      '<h1>Event</h1><br>' +
-                      '<p>This is where event info goes.</p>' + 
-                      '</div>';
-    // '<div id="content">'+
-    // '<div id="siteNotice">'+
-    // '</div>'+
-    // '<h1 id="firstHeading" class="firstHeading">Uluru</h1>'+
-    // '<div id="bodyContent">'+
-    // '<p><b>Uluru</b>, also referred to as <b>Ayers Rock</b>, is a large ' +
-    // 'sandstone rock formation in the southern part of the '+
-    // 'Northern Territory, central Australia. It lies 335&#160;km (208&#160;mi) '+
-    // 'south west of the nearest large town, Alice Springs; 450&#160;km '+
-    // '(280&#160;mi) by road. Kata Tjuta and Uluru are the two major '+
-    // 'features of the Uluru - Kata Tjuta National Park. Uluru is '+
-    // 'sacred to the Pitjantjatjara and Yankunytjatjara, the '+
-    // 'Aboriginal people of the area. It has many springs, waterholes, '+
-    // 'rock caves and ancient paintings. Uluru is listed as a World '+
-    // 'Heritage Site.</p>'+
-    // '<p>Attribution: Uluru, <a href="https://en.wikipedia.org/w/index.php?title=Uluru&oldid=297882194">'+
-    // 'https://en.wikipedia.org/w/index.php?title=Uluru</a> '+
-    // '(last visited June 22, 2009).</p>'+
-    // '</div>'+
-    // '</div>';
+// function addInfoWindow(marker, map) {
+//   var contentString = 'div id="windowContent"' + 
+//                       '<h1>Event</h1><br>' +
+//                       '<p>This is where event info goes.</p>' + 
+//                       '</div>';
+//     // '<div id="content">'+
+//     // '<div id="siteNotice">'+
+//     // '</div>'+
+//     // '<h1 id="firstHeading" class="firstHeading">Uluru</h1>'+
+//     // '<div id="bodyContent">'+
+//     // '<p><b>Uluru</b>, also referred to as <b>Ayers Rock</b>, is a large ' +
+//     // 'sandstone rock formation in the southern part of the '+
+//     // 'Northern Territory, central Australia. It lies 335&#160;km (208&#160;mi) '+
+//     // 'south west of the nearest large town, Alice Springs; 450&#160;km '+
+//     // '(280&#160;mi) by road. Kata Tjuta and Uluru are the two major '+
+//     // 'features of the Uluru - Kata Tjuta National Park. Uluru is '+
+//     // 'sacred to the Pitjantjatjara and Yankunytjatjara, the '+
+//     // 'Aboriginal people of the area. It has many springs, waterholes, '+
+//     // 'rock caves and ancient paintings. Uluru is listed as a World '+
+//     // 'Heritage Site.</p>'+
+//     // '<p>Attribution: Uluru, <a href="https://en.wikipedia.org/w/index.php?title=Uluru&oldid=297882194">'+
+//     // 'https://en.wikipedia.org/w/index.php?title=Uluru</a> '+
+//     // '(last visited June 22, 2009).</p>'+
+//     // '</div>'+
+//     // '</div>';
 
-  var i = 0; //need to increment this
+//   var i = 0; //need to increment this
 
-  var infowindow = new google.maps.InfoWindow({
-    content: contentString,
-    num: i
-  });
+//   var infowindow = new google.maps.InfoWindow({
+//     content: contentString,
+//     num: i
+//   });
 
-  // var marker = new google.maps.Marker({
-  // position: uluru,
-  // map: map,
-  // title: 'Uluru (Ayers Rock)'
-  // });
+//   // var marker = new google.maps.Marker({
+//   // position: uluru,
+//   // map: map,
+//   // title: 'Uluru (Ayers Rock)'
+//   // });
 
-  marker.addListener('click', function() {
-  infowindow.open(map, marker);
-  });
-}
+//   marker.addListener('click', function() {
+//   infowindow.open(map, marker);
+//   });
+// }
+
+// function saveEvent(place) {
+//   $.get("/saved-event", )
+// }
+
 

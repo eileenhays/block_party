@@ -38,25 +38,84 @@ def search_for_events():
     """Request events from Meetup API location input from user, and
     returns a JSON with local events."""
 
-    set_radius = 2 #default distance in mile(s) from location
-    num_of_results = 10
+    # Search coordinates
     lat = request.args.get('lat')
     lng = request.args.get('lng')
     #Use for testing purposes
     # lat = 37.7893921
     # lng = -122.40775389999999
 
+    # Search parameters
+    search_radius = 2 #default distance in mile(s) from location
+    search_time = ',1w' #upcoming for the week
+    num_of_results = 3
 
-    payload = {'key': api_key, 'sign': 'true', 'photo-host': 'public',
-               'lat': lat, 'lon': lng, 'radius': set_radius,
+    payload = {'key': api_key, 
+               'time': search_time, 
+               'sign': 'true', 
+               'photo-host': 'public',
+               'lat': lat, 
+               'lon': lng, 
+               'radius': search_radius,
                'page': num_of_results}
     url = 'https://api.meetup.com/2/open_events'
+
+    print payload
+
     response = requests.get(url, params=payload)
     data = response.json()
+    # print data
     clean_data = data_clean.meetup_jsonify_events(data)
+    print type(clean_data)
 
     return jsonify(clean_data)
+    # data = open_json_data('./seed_data/test_events_response.json')
+    # print data
+    # clean_data = data_clean.meetup_jsonify_events(data)
+    # return clean_data
 
+
+
+# def open_json_data(filename):
+#     data = json.loads(open(filename))
+#     return data
+
+# @app.route('/test')
+# def render_test():
+#     """This is to test my functions"""
+
+#     filename = open('./seed_data/messy_test.json')
+#     data = json.loads(filename)
+#     return render_template("test.html", data=str(data))
+
+# @app.route('/saved-address')
+# def save_address_in_database(event_record):
+#     """Saves address information in database tied to user."""
+
+#     pass 
+#     lat = request.args.get('lat')
+#     lng = 
+#     formatted_addy = 
+
+# @app.route('/saved-user', method=["POST"])
+# def save_user_in_database(event_record):
+#     """Saves user information in database tied to user."""
+
+#     pass 
+    
+
+# @app.route('/saved-event')
+# def save_event_in_database(event_record):
+#     """Saves event information in database tied to user."""
+
+#     pass 
+
+#     datetime = request.args.get('datetime')
+#     name = request.args.get('name')
+#     url = request.args.get('url')
+#     user_id = #some SQLAlchemy query 
+#     addy_id = 
+#     catevt_id = 
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the

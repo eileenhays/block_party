@@ -16,10 +16,11 @@ class Address(db.Model):
     addy_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     lat = db.Column(db.String(100), nullable=False)
     lng = db.Column(db.String(100), nullable=False)
-    add_line1 = db.Column(db.String(100), nullable=False)
-    add_line2 = db.Column(db.String(100), nullable=True)
-    city =  db.Column(db.String(100), nullable=False)
-    zipcode = db.Column(db.String(10), nullable=False)
+    # add_line1 = db.Column(db.String(100), nullable=False)
+    # add_line2 = db.Column(db.String(100), nullable=True)
+    # city =  db.Column(db.String(100), nullable=False)
+    # zipcode = db.Column(db.String(10), nullable=False)
+    formatted_addy = db.Column(db.String(200), nullable=False)
 
     def __repr__(self):
         """Prints address object in a more helpful way"""
@@ -74,7 +75,7 @@ class Saved_event(db.Model):
     url = db.Column(db.String(500), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     addy_id = db.Column(db.Integer, db.ForeignKey('addresses.addy_id'), nullable=False)
-    catevt_id = db.Column(db.Integer, db.ForeignKey('categories_events.catevt_id'), nullable=True)    
+    # catevt_id = db.Column(db.Integer, db.ForeignKey('categories_events.catevt_id'), nullable=True)    
 
     def __repr__(self):
         """Prints saved_location object in a more helpful way"""
