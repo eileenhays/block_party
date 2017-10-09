@@ -47,7 +47,7 @@ def search_for_events():
 
     # Search parameters
     search_radius = 2 #default distance in mile(s) from location
-    search_time = ',1w' #upcoming for the week
+    search_time = ',2w' #upcoming for the week
     num_of_results = 3
 
     payload = {'key': api_key, 
@@ -60,20 +60,11 @@ def search_for_events():
                'page': num_of_results}
     url = 'https://api.meetup.com/2/open_events'
 
-    print payload
-
     response = requests.get(url, params=payload)
     data = response.json()
-    # print data
     clean_data = data_clean.meetup_jsonify_events(data)
-    print type(clean_data)
 
     return jsonify(clean_data)
-    # data = open_json_data('./seed_data/test_events_response.json')
-    # print data
-    # clean_data = data_clean.meetup_jsonify_events(data)
-    # return clean_data
-
 
 
 # def open_json_data(filename):

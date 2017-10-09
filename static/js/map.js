@@ -2,18 +2,18 @@
 
 var map;
 var centerSF = {lat: 37.7749, lng: -122.4194}; 
+var markers = [];
 
-
-// Add a search box for map that uses Autocomplete. Uses Places library. 
 
 function initAutocomplete() {
+  // Instantiates map 
   map = new google.maps.Map(document.getElementById('map'), {
     center: centerSF,
     zoom: 12,
     mapTypeId: 'roadmap'
   });
 
-  // Create the search box and link it to the UI element.
+  // Create search box and link it to the UI element.
   var input = document.getElementById('pac-input');
   var searchBox = new google.maps.places.SearchBox(input);
   
@@ -24,15 +24,13 @@ function initAutocomplete() {
     searchBox.setBounds(map.getBounds());
   });
 
-  // Sets up primary marker and searches for events with markers
-  setPrimaryMarker(map, searchBox); //Have the searchBox listener here**** 
+  // Setup primary marker and searches for events with markers
+  setPrimaryMarker(map, searchBox, markers); //Have the searchBox listener here**** 
 }
 
-function setPrimaryMarker(map, searchBox) {
-  // Listen for the event fired when the user selects a prediction and retrieve
-  // more details for that place. Autocomplete object. 
-  var markers = [];
-  window.markers = markers; 
+function setPrimaryMarker(map, searchBox, markers) {
+  // Adds an event listener that autocompletes in searchBox, and retrieves
+  // more details for that place.  
 
   searchBox.addListener('places_changed', function() {
     var places = searchBox.getPlaces();
@@ -86,6 +84,7 @@ function setPrimaryMarker(map, searchBox) {
 
     map.fitBounds(bounds);
      
+    // Searches for events and adds markers 
     searchWithPrimaryLocation(places);
 
   });
@@ -118,46 +117,53 @@ function searchWithPrimaryLocation(places) {
 function setEventMarkers(data, map) {
   // Event places data from server
   var eventPlaces = Object.values(data);
-  window.eventPlaces = eventPlaces;
 
-  // No search results will exit out of function
+  // Exit out of function if no search results
   if (eventPlaces.length == 0) {
     return;
   }
 
   // Loop through each event in the eventPlaces array
-  eventPlaces.forEach(function(place) {
-    console.log(place.position);
 
-    if (!place.position) {
-      console.log("Returned event place contains no geometry");
-      return;
-    }
+  for (var i = 0; i < eventPlaces.length; i++) {
 
-    // Create a marker for each event place.
+    var place = eventPlaces[i]; 
+    var placeInfowindow = new google.maps.InfoWindow({
+      content: 'Test content',
+    });
+
     var eventMarker = new google.maps.Marker({
-                      map: map,
-                      title: place.name,
-                      position: place.position
-                      });
+      map: map,
+      title: place.name,
+      position: place.position,
+      infowindow: placeInfowindow,
+    });
 
-    // Add marker to map 
+    console.log(eventMarker);
     markers.push(eventMarker);
 
-    console.log(markers);
+    // console.log(markers);
 
-    // Where I would add an event listener for my marker info windows
-    addInfowindow(markers, map)
+    eventMarker.addListener('click', function() {
+      hideAllInfoWindows(map, placeInfowindow);
+      placeInfowindow.open(map, this); 
+    });
+
     // Expand map boundaries to include event markers
-    bounds.extend(place.position)
-    // addInfoWindow(marker, map)    
-  });
+    bounds.extend(place.position);    
 
-  // Fit map to extended new boundary 
-  map.fitBounds(bounds);
+    // Fit map to extended new boundary 
+    map.fitBounds(bounds); 
+  }
 
   listEventsOnPage(eventPlaces);
 
+}
+
+function hideAllInfoWindows(map, placeInfowindow) {
+  markers.forEach(function(marker) {
+    placeInfowindow.close(map, marker);
+  });
 }
 
 function clearOldMarkers(markers) {
@@ -176,26 +182,25 @@ function listEventsOnPage(eventPlaces) {
   eventList.innerHTML = contentText;
 }
 
-function addInfowindow(markers, map) {
-  var contentString = '<div id="windowContent">' + 
-                      '<h3>Event</h3>' +
-                      '<p>This is where event info goes.</p>' + 
-                      '</div>';
+// function addInfowindow(map, place) {
+//   var contentString = '<div id="windowContent">' + 
+//                       '<h3>' + place.name + '</h3>' +
+//                       '<p>' + place.time + '</p>' + 
+//                       '<p><a href="' + place.url + '">' + place.url + '</a></p>' + 
+//                       '</div>';
 
-  var i = 0; //need to increment this
+//   new google.maps.InfoWindow({
+//     content: contentString,
+//     num: i
+//   });
 
-  markers.forEach(function(marker) {
-    var infowindow = new google.maps.InfoWindow({
-      content: contentString,
-      num: i
-    });
+//   marker.addListener('click', function() {
+//   infowindow.open(map, marker);
+//   });
 
-    marker.addListener('click', function() {
-    infowindow.open(map, marker);
-    });
-  });
+// }
 
-}
+
 
 // function saveEvent(place) {
 //   $.get("/saved-event", )
