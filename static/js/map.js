@@ -2,6 +2,7 @@
 
 var map;
 var centerSF = {lat: 37.7749, lng: -122.4194}; 
+var eventData;
 
 // Add a search box for map that uses Autocomplete. Uses Places library. 
 
@@ -25,7 +26,6 @@ function initAutocomplete() {
 
   // Sets up primary marker and searches for events with markers
   setPrimaryMarker(map, searchBox); //Have the searchBox listener here**** 
-
 }
 
 function setPrimaryMarker(map, searchBox) {
@@ -107,7 +107,6 @@ function searchWithPrimaryLocation(places) {
   $.ajax({url: "/search-events", 
           data: obj, 
           success: function(result) {
-            console.log('hi');
             setEventMarkers(result, map);
           },
           error: function(error) {
@@ -121,7 +120,7 @@ function searchWithPrimaryLocation(places) {
 function setEventMarkers(data, map) {
   // Event places data from server
   var eventPlaces = Object.values(data);
-  console.log(eventPlaces);
+  window.eventPlaces = eventPlaces;
 
   // No search results will exit out of function
   if (eventPlaces.length == 0) {
@@ -156,6 +155,9 @@ function setEventMarkers(data, map) {
 
   // Fit map to extended new boundary 
   map.fitBounds(bounds);
+
+  listEventsOnPage(eventPlaces);
+
 }
 
 function clearOldMarkers(markers) {
@@ -165,6 +167,16 @@ function clearOldMarkers(markers) {
     });
     markers = [];
 }
+
+function listEventsOnPage(eventPlaces) {
+  var eventList = document.getElementById('events_list');
+
+  var contentText = JSON.stringify(eventPlaces);
+
+  eventList.innerHTML = contentText;
+}
+
+
 
 // function addInfoWindow(marker, map) {
 //   var contentString = 'div id="windowContent"' + 
