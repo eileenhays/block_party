@@ -44,10 +44,11 @@ function setPrimaryMarker(map, searchBox, markers) {
       return;
     }
 
-    clearOldMarkers(markers); //I think this only needs to live here if searchBox changes 
+    clearOldMarkers(markers); 
     
     console.log(places);
 
+    // Instantiate boundaries for the map 
     var bounds = new google.maps.LatLngBounds();
     window.bounds = bounds
     
@@ -123,18 +124,17 @@ function setEventMarkers(data, map) {
     return;
   }
 
-  // Add a marker and info window to each event 
+  // Add a marker and info window to each event place
   for (var i = 0; i < eventPlaces.length; i++) {
     var place = eventPlaces[i]; 
     var contentString = '<div id="windowContent">' + 
-                        '<h3>' + place.name + '</h3>' +
+                        '<h3><a href=' + place.url + '>' + place.name + '</a></h3>' +
                         '<p>' + place.time + '</p>' + 
-                        '<p><a href="' + place.url + '">' + place.url + '</a></p>' + 
                         '</div>';    
-    console.log(contentString);
-    var placeInfowindow = new google.maps.InfoWindow({
-    });
+    // console.log(contentString);
 
+    // Instantiates info window for place
+    var placeInfowindow = new google.maps.InfoWindow();
     var eventMarker = new google.maps.Marker({
       map: map,
       title: place.name,
@@ -142,14 +142,10 @@ function setEventMarkers(data, map) {
       infowindow: contentString
     });
 
+    // Add marker to map
     markers.push(eventMarker);
 
-    // console.log(markers);
-
     eventMarker.addListener('click', function(evt) {
-      // var clickLat = this.position.lat();
-      // var clickLng = this.position.lng();
-      // console.log(eventMarker.infowindow);
       placeInfowindow.setContent(this.infowindow);
       placeInfowindow.open( map, this )
 
@@ -157,32 +153,35 @@ function setEventMarkers(data, map) {
       // placeInfowindow.open(map, this); 
     });
 
-    // Expand map boundaries to include event markers
+    // Expand map boundaries to include new event marker
     bounds.extend(place.position);    
 
     // Fit map to extended new boundary 
     map.fitBounds(bounds); 
   }
 
+  // Adds the list of these events on the page
   listEventsOnPage(eventPlaces);
 
 }
 
 function hideAllInfoWindows(map, placeInfowindow) {
+  // Closes info windows when user clicks elsewhere
   markers.forEach(function(marker) {
     placeInfowindow.close(map, marker);
   });
 }
 
 function clearOldMarkers(markers) {
-    // Clear out the old event markers.
-    markers.forEach(function(marker) {
-      markers.setMap(null);
-    });
-    markers = [];
+  // Clear out the old event markers.
+  markers.forEach(function(marker) {
+    marker.setMap(null);
+  });
+  markers = [];
 }
 
 function listEventsOnPage(eventPlaces) {
+  // Full list of events on the side of the map
   var eventList = document.getElementById('events_list');
 
   var contentText = JSON.stringify(eventPlaces);
@@ -190,23 +189,6 @@ function listEventsOnPage(eventPlaces) {
   eventList.innerHTML = contentText;
 }
 
-// function addInfowindow(map, place) {
-//   var contentString = '<div id="windowContent">' + 
-//                       '<h3>' + place.name + '</h3>' +
-//                       '<p>' + place.time + '</p>' + 
-//                       '<p><a href="' + place.url + '">' + place.url + '</a></p>' + 
-//                       '</div>';
-
-//   new google.maps.InfoWindow({
-//     content: contentString,
-//     num: i
-//   });
-
-//   marker.addListener('click', function() {
-//   infowindow.open(map, marker);
-//   });
-
-// }
 
 
 
