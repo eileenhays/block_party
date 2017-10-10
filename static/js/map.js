@@ -113,40 +113,48 @@ function searchWithPrimaryLocation(places) {
           }});
  }
 
-
 function setEventMarkers(data, map) {
   // Event places data from server
   var eventPlaces = Object.values(data);
+  console.log(eventPlaces); 
 
   // Exit out of function if no search results
   if (eventPlaces.length == 0) {
     return;
   }
 
-  // Loop through each event in the eventPlaces array
-
+  // Add a marker and info window to each event 
   for (var i = 0; i < eventPlaces.length; i++) {
-
     var place = eventPlaces[i]; 
+    var contentString = '<div id="windowContent">' + 
+                        '<h3>' + place.name + '</h3>' +
+                        '<p>' + place.time + '</p>' + 
+                        '<p><a href="' + place.url + '">' + place.url + '</a></p>' + 
+                        '</div>';    
+    console.log(contentString);
     var placeInfowindow = new google.maps.InfoWindow({
-      content: 'Test content',
     });
 
     var eventMarker = new google.maps.Marker({
       map: map,
       title: place.name,
       position: place.position,
-      infowindow: placeInfowindow,
+      infowindow: contentString
     });
 
-    console.log(eventMarker);
     markers.push(eventMarker);
 
     // console.log(markers);
 
-    eventMarker.addListener('click', function() {
-      hideAllInfoWindows(map, placeInfowindow);
-      placeInfowindow.open(map, this); 
+    eventMarker.addListener('click', function(evt) {
+      // var clickLat = this.position.lat();
+      // var clickLng = this.position.lng();
+      // console.log(eventMarker.infowindow);
+      placeInfowindow.setContent(this.infowindow);
+      placeInfowindow.open( map, this )
+
+      // hideAllInfoWindows(map, this.infowindow);
+      // placeInfowindow.open(map, this); 
     });
 
     // Expand map boundaries to include event markers
