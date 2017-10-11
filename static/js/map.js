@@ -13,8 +13,22 @@ function initAutocomplete() {
     mapTypeId: 'roadmap'
   });
 
+  // var input;
+  // // if localStorage has something saved in savedLocation {
+  // //   then, use the location as an input for the search box
+  // // }
+  // //Check if there is already a saved location saved in the HTML5 storage 
+  // if ('savedLocation' in localStorage) {
+  //   input = localStorage['savedLocation'];
+  // }
+  // else {
+  // // Create search box and link it to the UI element.
+  //   input = document.getElementById('pac-input');
+  // }
+
   // Create search box and link it to the UI element.
   var input = document.getElementById('pac-input');
+  
   var searchBox = new google.maps.places.SearchBox(input);
   
   map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
@@ -25,7 +39,7 @@ function initAutocomplete() {
   });
 
   // Setup primary marker and searches for events with markers
-  setPrimaryMarker(map, searchBox, markers); //Have the searchBox listener here**** 
+  setPrimaryMarker(map, searchBox, markers);  
 }
 
 function setPrimaryMarker(map, searchBox, markers) {
@@ -95,17 +109,22 @@ function setPrimaryMarker(map, searchBox, markers) {
 function searchWithPrimaryLocation(places) {
   // User input primary location to search for local events.
 
-  var obj = {};
+  var primaryLocation = {};
 
-  obj["name"] = places[0].name;
-  obj["lat"] = places[0].geometry.location.lat();
-  obj["lng"] = places[0].geometry.location.lng();            
+  primaryLocation["name"] = places[0].name;
+  primaryLocation["address"] = places[0].formatted_address;
+  primaryLocation["lat"] = places[0].geometry.location.lat();
+  primaryLocation["lng"] = places[0].geometry.location.lng();            
 
-  console.log(obj);
+  console.log(primaryLocation);
+
+  // Save the location to a local storage session (persists in browser)
+  localStorage.setItem('savedLocation', places[0].formatted_address);
+  console.log("saved session:" + localStorage.savedLocation);
 
   // AJAX call to server to search local events with provided address
   $.ajax({url: "/search-events", 
-          data: obj, 
+          data: primaryLocation, 
           success: function(result) {
             setEventMarkers(result, map);
           },
@@ -127,9 +146,19 @@ function setEventMarkers(data, map) {
   // Add a marker and info window to each event place
   for (var i = 0; i < eventPlaces.length; i++) {
     var place = eventPlaces[i]; 
+    // var shortEventDescript = (function(place) {
+    //       if len(place.description) > 280 {
+    //         return place.description.slice(0, 281) + '...'; 
+    //       }
+    //       else {
+    //         return place.description;
+    //       } 
+    //     })();
+    var shortEventDescript = place.description.slice(0, 281); 
     var contentString = '<div id="windowContent">' + 
                         '<h3><a href=' + place.url + '>' + place.name + '</a></h3>' +
-                        '<p>' + place.time + '</p>' + 
+                        '<p><strong>' + place.time + '</strong></p>' + 
+                        '<p>' + shortEventDescript + '...</p>' + 
                         '</div>';    
     // console.log(contentString);
 
@@ -189,11 +218,5 @@ function listEventsOnPage(eventPlaces) {
   eventList.innerHTML = contentText;
 }
 
-
-
-
-// function saveEvent(place) {
-//   $.get("/saved-event", )
-// }
 
 

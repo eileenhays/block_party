@@ -9,9 +9,7 @@ from model import connect_to_db, db #<import classes>
 from sys import argv
 from pprint import pprint, pformat
 import os
-import requests
-import json
-import data_clean
+import api_data_handler
 
 
 app = Flask(__name__)
@@ -35,41 +33,24 @@ def index():
 
 @app.route('/search-events')
 def search_for_events():
-    """Request events from Meetup API location input from user, and
-    returns a JSON with local events."""
+    """Request events from Meetup API and returns a JSON with local events."""
 
-    # Search coordinates
     lat = request.args.get('lat')
     lng = request.args.get('lng')
-    #Use for testing purposes
-    # lat = 37.7893921
-    # lng = -122.40775389999999
 
-    # Search parameters
-    search_radius = 2 #default distance in mile(s) from location
-    search_time = ',2w' #upcoming for the week
-    num_of_results = 3
+    raw_data = api_data_handler.meetup_api_call(lat, lng, api_key)
+    clean_data = api_data_handler.meetup_jsonify_events(raw_data)
 
-    payload = {'key': api_key, 
-               'time': search_time, 
-               'sign': 'true', 
-               'photo-host': 'public',
-               'lat': lat, 
-               'lon': lng, 
-               'radius': search_radius,
-               'page': num_of_results}
-    url = 'https://api.meetup.com/2/open_events'
-
-    response = requests.get(url, params=payload)
-    data = response.json()
-    clean_data = data_clean.meetup_jsonify_events(data)
+    # print "Raw data:"
+    # print raw_data 
+    # print "\n\n\n"
+    # print "Clean data:"
+    # print clean_data 
+    # print "\n\n\n"
 
     return jsonify(clean_data)
 
 
-# def open_json_data(filename):
-#     data = json.loads(open(filename))
-#     return data
 
 # @app.route('/test')
 # def render_test():

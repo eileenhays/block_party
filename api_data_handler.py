@@ -1,13 +1,36 @@
 from datetime import datetime
+import requests
+import json
 
 # class JSON_clean(object):
-# 	"""Parses JSON data from various sources."""
+# """Parses JSON data from various sources."""
+
+def meetup_api_call(lat, lng, api_key):
+    """Uses specified parameters to make a call to the Meetup API"""
+
+    #Search parameters
+    search_radius = 2 #default distance in mile(s) from location
+    search_time = ',2w' #upcoming 2 weeks
+    num_of_results = 1 
+
+    payload = {'key': api_key, 
+               'time': search_time, 
+               'sign': 'true', 
+               'photo-host': 'public',
+               'lat': lat, 
+               'lon': lng, 
+               'radius': search_radius,
+               'page': num_of_results}
+    url = 'https://api.meetup.com/2/open_events'
+
+    response = requests.get(url, params=payload)
+    return response.json()
 
 
 def meetup_jsonify_events(data):
     """"Parses out relevant data from the Meetup API response, and 
     dumps clean event info into JSON."""
-    print data
+    # print data
     events_list = data['results']
 
     map_events = {}
