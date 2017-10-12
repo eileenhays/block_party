@@ -119,8 +119,11 @@ function searchWithPrimaryLocation(places) {
   console.log(primaryLocation);
 
   // Save the location to a local storage session (persists in browser)
-  localStorage.setItem('savedLocation', places[0].formatted_address);
-  console.log("saved session:" + localStorage.savedLocation);
+  // localStorage.setItem('savedLocation', places[0].formatted_address);
+  // console.log("saved session:" + localStorage.savedLocation);
+
+  //AJAX call to server to save session with provided address
+  // $.ajax({url: "/"})
 
   // AJAX call to server to search local events with provided address
   $.ajax({url: "/search-events", 
@@ -130,7 +133,8 @@ function searchWithPrimaryLocation(places) {
           },
           error: function(error) {
             console.log(error);
-          }});
+          }
+        });
  }
 
 function setEventMarkers(data, map) {
@@ -146,6 +150,7 @@ function setEventMarkers(data, map) {
   // Add a marker and info window to each event place
   for (var i = 0; i < eventPlaces.length; i++) {
     var place = eventPlaces[i]; 
+    console.log(place.position);
     // var shortEventDescript = (function(place) {
     //       if len(place.description) > 280 {
     //         return place.description.slice(0, 281) + '...'; 
@@ -154,16 +159,24 @@ function setEventMarkers(data, map) {
     //         return place.description;
     //       } 
     //     })();
+
+    // Skips over the place if it does not have position
+    if (jQuery.isEmptyObject(place.position) || place.position == {"lat":0, "lng":0}) {
+      continue;
+    } 
+
     var shortEventDescript = place.description.slice(0, 281); 
     var contentString = '<div id="windowContent">' + 
-                        '<h3><a href=' + place.url + '>' + place.name + '</a></h3>' +
+                        '<h3><a href=' + place.url + 'target="_blank">' + place.name + '</a></h3>' +
                         '<p><strong>' + place.time + '</strong></p>' + 
                         '<p>' + shortEventDescript + '...</p>' + 
                         '</div>';    
     // console.log(contentString);
 
     // Instantiates info window for place
-    var placeInfowindow = new google.maps.InfoWindow();
+    var placeInfowindow = new google.maps.InfoWindow({
+      maxWidth: 200
+    });
     var eventMarker = new google.maps.Marker({
       map: map,
       title: place.name,
@@ -217,6 +230,14 @@ function listEventsOnPage(eventPlaces) {
 
   eventList.innerHTML = contentText;
 }
+
+// function isEmpty(obj) {
+//   for (var prop in obj) {
+//     if (obj.hasOwnProperty(prop))
+//       return false;
+//     return true;
+//   }
+// }
 
 
 

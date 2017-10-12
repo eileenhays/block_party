@@ -47,10 +47,9 @@ def load_users():
         email = user['email']
         password = user['password']
         # addy_id = randint(1, 100)
-        addy_id = 5
+        # addy_id = 5
 
-        user = User(user_id=user_id, name=name, email=email, password=password,
-                    addy_id=addy_id)
+        user = User(user_id=user_id, name=name, email=email, password=password)
 
         db.session.add(user)
 
@@ -98,7 +97,7 @@ if __name__ == "__main__":
     db.create_all()
 
     # Import different types of data
-    load_addresses()
+    # load_addresses()
     load_users()
     load_categories()
     set_val_user_id()

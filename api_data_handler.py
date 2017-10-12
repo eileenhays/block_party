@@ -1,9 +1,34 @@
 from datetime import datetime
+import pytz
 import requests
 import json
 
-# class JSON_clean(object):
-# """Parses JSON data from various sources."""
+def convert_datetime_from_epoch(ms_from_epoch):
+    """Format date time from time from epoch to human readable"""
+
+    # get time in UTC
+    datetime_in_utc = datetime.utcfromtimestamp(ms_from_epoch / 1000.0).replace(tzinfo=pytz.utc)
+
+    # convert UTC time to local timezone
+    tz = pytz.timezone('US/Pacific')
+    datetime_local = datetime_in_utc.astimezone(tz)
+
+    return datetime_local.strftime('%A, %B %d, %Y %H:%M %Z')
+    # event['utc_offset'] local time 
+
+# class Event(object):
+# # """Parses JSON data from various sources."""
+
+# def __init__(self, evt_id):
+#     self.evt_id = evt_id
+#     self.name = name
+#     self.description = description
+#     self.start_datetime = start_datetime
+#     self.duration = duration
+#     self.url = url
+#     self.rsvp_num = rsvp
+#     self.position
+
 
 def meetup_api_call(lat, lng, api_key):
     """Uses specified parameters to make a call to the Meetup API"""
@@ -21,6 +46,7 @@ def meetup_api_call(lat, lng, api_key):
                'lon': lng, 
                'radius': search_radius,
                'page': num_of_results,
+               'text_format': 'plain',
                'status': 'upcoming'}
     url = 'https://api.meetup.com/2/open_events'
 
@@ -41,9 +67,8 @@ def meetup_jsonify_events(data):
 
         event_dict['name'] = event['name']
         event_dict['description'] = event['description']
-        ms_from_epoch_time = event['time']
-        event_dict['time'] = datetime.fromtimestamp(ms_from_epoch_time / 1000.0).strftime('%Y-%m-%d %H:%M')
-        event_dict['utc_offset'] = event['utc_offset']    
+        event_dict['time'] = convert_datetime_from_epoch(event['time'])   
+        # event_dict['end_time']       
         event_dict['url'] = event['event_url']
         event_dict['rsvp_num'] = event['yes_rsvp_count']   
         event_dict['position'] = {}     

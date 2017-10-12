@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Login and Registration Page{% endblock %}
+{% block title %}Registration Page{% endblock %}
 
 {% block head %}
 
@@ -7,7 +7,7 @@
 
 {% block content %}
 
-    <form action="save-user" method="POST" id="register" autocomplete="off">
+    <form action="handle-regis" method="POST" id="register" autocomplete="off">
       <div class="form">
         <label><h2>register for a new account</h2></label><br>
         <p>find events quickly and save them easily</p>
@@ -17,18 +17,6 @@
         <input type="submit" value="register"></input>
       </div>
     </form>
-
-    <br><br>
-
-    <form action="handle-login" method="POST" id="login">
-      <div class="form">
-        <label><h2>login to an existing account</h2></label><br>
-        <input type="text" name="email" placeholder="email" required></input><br>
-        <input type="password" name="password" placeholder="password" required></input><br>
-        <input type="submit" value="login"></input><br>
-      </div>
-    </form>
-
 
  
 {% endblock %}

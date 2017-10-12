@@ -1,4 +1,4 @@
-Update: 10/3/17
+Updated: 10/12/17
 
 Project Description and Goals: 
 A web app will enables users to engage with their community through real social interaction with their neighbors. The user will be able to input an address and will interactively showcase dynamic events in their neighborhood on a map. 
@@ -50,30 +50,38 @@ MVP
 [x] Google Maps on main page
 [x] Add address search box to map
 [x] Ability to search for an address
-[ ] Ability to save address to profile
+[x] Add info boxes that have more info when markers are clicked on
+[ ] Ability to save address to session 
 [x] Show a marker for an address
 [x] Make a successful call to Meetup API that filters by distance 
 [x] Model.py
-[ ] Convert time into human readable
-[ ] Markers for each event call
-[ ] Create a radius shape on map that greys out things outside of it
-[ ] Add info boxes that have more info when markers are clicked on
-[ ] Add geolocation
+[x] Convert time into human readable
+[x] Markers for each event call
+[x] Ability to refresh results with new search address (remove old markers when the event listener hears places change)
+[x] Limit description of events in info window to 280 chars
 
 2.0 Features
-[ ] Create registration, login/logout
-[ ] Change look of markers
+[x] Create registration, login/logout
 [ ] Profile page
-[ ] Save address to database
+[ ] Ability to save new address
+[ ] Show saved address when someone is logged in
+[ ] Splash page
+[x] Save address to database and profile
 [ ] Save favorite events
+[ ] User-added events
+[ ] Remove of delete old or expired events in favorites
+[ ] Change look of markers
+[ ] Event info window disappears when clicked out of
 [ ] Password reset
-[ ] Password encryption
+[x] Password encryption (from passlib.hash import pbkdf2_sha256)
+[ ] Add geolocation 
+[ ] Add UI tests (Jasmine and Selenium)
+[ ] Create a radius shape on map that greys out things outside of it
 [ ] Add an event to calendar
 [ ] Change the radius of search, and radius of circle shape
 [ ] Search for events for a specific time period
 [ ] Remove of delete old or expired events in favorites
-[ ] User-added events
-[ ] Neighbor invites 
+[ ] Neighbor invites
 [ ] Recommender system
 [ ] Add volunteer events
 [ ] Add community gardens
@@ -82,6 +90,11 @@ MVP
 [ ] Petition (like change.org) for community improvement
 [ ] Data visualizations on community
 [ ] Make pretty
+
+Debugging
+[x] Server will not load up JSON data from file or API: errors out
+[x] Search box listener only works one time (global function?) 
+[x] Save event data in session, so that it can be easily saved to database
 
 
 Other opportunities to consider for later: 

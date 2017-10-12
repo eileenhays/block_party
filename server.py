@@ -38,8 +38,15 @@ def index():
 def search_for_events():
     """Request events from Meetup API and returns a JSON with local events."""
 
+    name = request.args.get('name')
+    address = request.args.get('address')
     lat = request.args.get('lat')
     lng = request.args.get('lng')
+
+    session["address"] = address
+    session["lat"] = lat
+    session["lng"] = lng
+    print session
 
     raw_data = api_data_handler.meetup_api_call(lat, lng, api_key)
     clean_data = api_data_handler.meetup_jsonify_events(raw_data)
@@ -48,8 +55,14 @@ def search_for_events():
 
     return jsonify(clean_data)
 
+@app.route('/registration')
+def render_registration_page():
+    """Shows registration page"""
 
-@app.route('/save-user', methods=['GET', 'POST'])
+    return render_template("registration.html")
+
+
+@app.route('/handle-regis', methods=['GET', 'POST'])
 def save_user_in_database():
     """Register new user and save info in database"""
 
@@ -57,16 +70,30 @@ def save_user_in_database():
     email = request.form.get("email") 
     regis_pw_input = request.form.get("password")
 
+    # Check if user is already registered
     if User.query.filter_by(email=email).first() is not None:
         flash("There is already an account registered with this email.")
-        return redirect("/save-user")
+        return redirect("/registration")
 
+    # Hash password to save in database
     hashed_pw = bcrypt.hash(regis_pw_input)
     del regis_pw_input    
 
-    user = User(name=name, email=email, password=hashed_pw)
+    # Add address record in DB 
+    if session != None:
+        address = Address(lat=session["lat"], lng=session["lng"], formatted_addy=session["address"])
+        db.session.add(address)
+        db.session.flush()
+
+    # Add user record in DB 
+    if address.addy_id:
+        user = User(name=name, email=email, password=hashed_pw, addy_id=address.addy_id)
+    else:
+        user = User(name=name, email=email, password=hashed_pw)
+
     db.session.add(user)
     db.session.commit() 
+
 
     flash("registration was successful")
 
@@ -75,7 +102,7 @@ def save_user_in_database():
 
 @app.route('/login')
 def render_login_page():
-    """Shows the registration and login page"""
+    """Shows the registration and login page. Gives user access to profile."""
 
     return render_template("regis-login.html")
 
@@ -96,14 +123,19 @@ def check_login():
         return redirect("/login")
 
 
-# @app.route('/saved-address')
-# def save_address_in_database(event_record):
-#     """Saves address information in database tied to user."""
+# @app.route('/logout')
+# def logout_user():
+#     """Logs user out of session"""
 
-#     pass 
-#     lat = request.args.get('lat')
-#     lng = 
-#     formatted_addy =     
+#     if session: #save data in session
+#         del session['user_id']
+#         flash("Logout successful!")
+#     else:
+#         flash("You have to log in first.")
+
+#     return redirect("/")
+
+  
 
 # @app.route('/saved-event')
 # def save_event_in_database(event_record):
@@ -118,16 +150,6 @@ def check_login():
 #     addy_id = 
 #     catevt_id =
 
-# # HELPER FUNCTIONS
-
-# def hashed_password(regis_pw_input):
-#     """Hashes a user input password"""
-
-#     # generate new salt, hash password
-#     hashed = bcrypt.hash(regis_pw_input)
-
-#     del regis_pw_input
-#     return hashed
 
 
 if __name__ == "__main__":
