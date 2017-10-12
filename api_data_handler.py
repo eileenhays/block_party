@@ -11,7 +11,7 @@ def meetup_api_call(lat, lng, api_key):
     #Search parameters
     search_radius = 2 #default distance in mile(s) from location
     search_time = ',2w' #upcoming 2 weeks
-    num_of_results = 1 
+    num_of_results = 20
 
     payload = {'key': api_key, 
                'time': search_time, 
@@ -20,7 +20,8 @@ def meetup_api_call(lat, lng, api_key):
                'lat': lat, 
                'lon': lng, 
                'radius': search_radius,
-               'page': num_of_results}
+               'page': num_of_results,
+               'status': 'upcoming'}
     url = 'https://api.meetup.com/2/open_events'
 
     response = requests.get(url, params=payload)
@@ -49,9 +50,9 @@ def meetup_jsonify_events(data):
         if 'venue' in event:
             event_dict['position']['lat'] = event['venue']['lat']
             event_dict['position']['lng'] = event['venue']['lon']
-        else: #check if group is the actual default location
-            event_dict['position']['lat'] = event['group']['group_lat']
-            event_dict['position']['lng'] = event['group']['group_lon']
+        # else: #check if group is the actual default location
+        #     event_dict['position']['lat'] = event['group']['group_lat']
+        #     event_dict['position']['lng'] = event['group']['group_lon']
 
         evt_id = event['id']
         map_events[evt_id] = event_dict #add each to map_events

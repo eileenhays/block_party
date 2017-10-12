@@ -22,13 +22,8 @@ def load_addresses():
         addy_id = address['addy_id'],
         lat = address['lat'],
         lng = address['lng'],
-        add_line1 = address['line1'],
-        add_line2 = address['line2'],
-        city = address['city'],
-        zipcode = address['zipcode']
 
-        address = Address(addy_id=addy_id, lat=lat, lng=lng, add_line1=add_line1,
-                          add_line2=add_line2, city=city, zipcode=zipcode)
+        address = Address(addy_id=addy_id, lat=lat, lng=lng)
 
         db.session.add(address)
 
@@ -69,17 +64,17 @@ def load_categories():
     print "Categories"
     Category.query.delete()
 
-    cat_dict = {"party":"parties", "fest":"festivals", "music":"concerts",
-                       "book":"book clubs", "sport":"sports and recreation activities"}
+    cat_dict = {"meetup":"Events from the meetup.com", 
+                "garden":"Community gardens in SF", 
+                "volun":"Volunteer opportunities in SF",
+                "evtbr":"Events from eventbrite.com", 
+                "parksrec":"Public parks and recreation activities"}
 
     for category in cat_dict.keys():
         cat_row = Category(name=category, description=cat_dict[category])
         db.session.add(cat_row)
 
     db.session.commit()
-
-
-
 
 
 # Helper function
@@ -106,4 +101,4 @@ if __name__ == "__main__":
     load_addresses()
     load_users()
     load_categories()
-    # set_val_user_id()
+    set_val_user_id()
