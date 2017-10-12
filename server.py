@@ -49,9 +49,10 @@ def search_for_events():
     print session
 
     raw_data = api_data_handler.meetup_api_call(lat, lng, api_key)
+    print pprint(raw_data)
+
     clean_data = api_data_handler.meetup_jsonify_events(raw_data)
 
-    print pprint(raw_data)
 
     return jsonify(clean_data)
 

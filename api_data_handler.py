@@ -51,6 +51,8 @@ def meetup_api_call(lat, lng, api_key):
     url = 'https://api.meetup.com/2/open_events'
 
     response = requests.get(url, params=payload)
+    print "*******************" 
+    print response
     return response.json()
 
 
@@ -66,7 +68,8 @@ def meetup_jsonify_events(data):
         event_dict = {}
 
         event_dict['name'] = event['name']
-        event_dict['description'] = event['description']
+        if 'description' in event:
+            event_dict['description'] = event['description']
         event_dict['time'] = convert_datetime_from_epoch(event['time'])   
         # event_dict['end_time']       
         event_dict['url'] = event['event_url']
