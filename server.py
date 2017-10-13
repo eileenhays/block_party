@@ -49,12 +49,12 @@ def search_for_events():
     print session
 
     raw_data = api_data_handler.meetup_api_call(lat, lng, api_key)
-    print pprint(raw_data)
-
+    # print pprint(raw_data)
     clean_data = api_data_handler.meetup_jsonify_events(raw_data)
-
+    # print pprint(clean_data)
 
     return jsonify(clean_data)
+
 
 @app.route('/registration')
 def render_registration_page():
@@ -105,7 +105,7 @@ def save_user_in_database():
 def render_login_page():
     """Shows the registration and login page. Gives user access to profile."""
 
-    return render_template("regis-login.html")
+    return render_template("login.html")
 
 
 @app.route('/handle-login', methods=['POST'])
@@ -136,20 +136,46 @@ def check_login():
 
 #     return redirect("/")
 
-  
+# @app.route('/favorite')
+# def save_event_in_database(evt_obj):
+#     """Saves event information in database when user favorites""" 
 
-# @app.route('/saved-event')
-# def save_event_in_database(event_record):
-#     """Saves event information in database tied to user."""
-
-#     pass 
-
-#     datetime = request.args.get('datetime')
 #     name = request.args.get('name')
+#     time = request.args.get('time')
 #     url = request.args.get('url')
+#     position = request.args.get('position')
 #     user_id = #some SQLAlchemy query 
 #     addy_id = 
 #     catevt_id =
+
+#     event = Saved_event()
+#     datetime = db.Column(db.DateTime, nullable=False)
+#     name = db.Column(db.String(150), nullable=False)
+#     url = db.Column(db.String(500), nullable=False)
+#     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+#     addy_id = db.Column(db.Integer, db.ForeignKey('addresses.addy_id'), nullable=False)
+
+
+# @app.route('/meetup-event-search')
+# def search_specific_meetup_event():
+#     """Request events from Meetup API and returns a JSON with local events."""
+
+#     evt_id = request.args.get('evt_id')
+
+
+#     session["address"] = address
+#     session["lat"] = lat
+#     session["lng"] = lng
+#     print session
+
+#     raw_data = api_data_handler.meetup_api_call(lat, lng, api_key)
+#     # print pprint(raw_data)
+#     clean_data = api_data_handler.meetup_jsonify_events(raw_data)
+#     # print pprint(clean_data)
+
+#     return jsonify(clean_data)
+
+
 
 
 

@@ -30,6 +30,24 @@ def convert_datetime_from_epoch(ms_from_epoch):
 #     self.position
 
 
+"""
+class MeetupAPI(object):
+    self._url = "..."
+
+    @classmethod
+    def open_events(cls, lat, lng, api_key)
+        returns processed open_events
+        ... meetup_api_call stuff
+        return cls._sanitize_event_data(meetup_api_call_data)
+
+    @classmethod
+    def _sanitize_event_data
+"""
+
+# x = MeetupAPI()
+# x.instance_method()
+# MeetupAPI.class_method()
+
 def meetup_api_call(lat, lng, api_key):
     """Uses specified parameters to make a call to the Meetup API"""
 
@@ -46,13 +64,11 @@ def meetup_api_call(lat, lng, api_key):
                'lon': lng, 
                'radius': search_radius,
                'page': num_of_results,
-               'text_format': 'plain',
+               # 'text_format': 'plain',
                'status': 'upcoming'}
     url = 'https://api.meetup.com/2/open_events'
 
     response = requests.get(url, params=payload)
-    print "*******************" 
-    print response
     return response.json()
 
 
@@ -78,11 +94,13 @@ def meetup_jsonify_events(data):
         if 'venue' in event:
             event_dict['position']['lat'] = event['venue']['lat']
             event_dict['position']['lng'] = event['venue']['lon']
-        # else: #check if group is the actual default location
-        #     event_dict['position']['lat'] = event['group']['group_lat']
-        #     event_dict['position']['lng'] = event['group']['group_lon']
 
         evt_id = event['id']
         map_events[evt_id] = event_dict #add each to map_events
 
     return map_events
+
+
+# def meetup_search_event(evt_id):
+#     """"Parses out relevant data from the Meetup API response, and 
+#     dumps clean event info into JSON."""

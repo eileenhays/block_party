@@ -16,10 +16,6 @@ class Address(db.Model):
     addy_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     lat = db.Column(db.String(100), nullable=False)
     lng = db.Column(db.String(100), nullable=False)
-    # add_line1 = db.Column(db.String(100), nullable=True)
-    # add_line2 = db.Column(db.String(100), nullable=True)
-    # city =  db.Column(db.String(100), nullable=True)
-    # zipcode = db.Column(db.String(10), nullable=True)
     formatted_addy = db.Column(db.String(200), nullable=True)
 
     def __repr__(self):
