@@ -1,6 +1,7 @@
 """ Models and database functions for Community database. """
 
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
 
 # Connect to the PostgreSQL database
 
@@ -26,7 +27,7 @@ class Address(db.Model):
                                                         self.lng)
 
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     """User information collected when user registers."""
 
     __tablename__ = 'users'
@@ -37,11 +38,28 @@ class User(db.Model):
     password = db.Column(db.String(100), nullable=False)
     addy_id = db.Column(db.ForeignKey(Address.addy_id), nullable=True)
 
+    def __init__(self, name, email, password, addy_id):
+        self.name = name
+        self.email = email
+        self.password = password
+        self.addy_id = addy_id
+
+
     def __repr__(self):
         """Prints user object in a more helpful way"""
 
         return "<User: user_id=%s name=%s email=%s>" % (self.user_id, self.name,
                                                         self.email)
+
+    # Necessary functions for Flask-login
+    # def is_authenticated(self):
+    #     return True
+    # def is_active(self):
+    #     return True
+    # def is_anonymous(self):
+    #     return False
+    def get_id(self):
+        return str(self.user_id) 
 
 
 class Category(db.Model):
@@ -97,31 +115,10 @@ class Category_events(db.Model):
         return "<Category_events: catevt_id=%s evt_id=%s cat_id=%s>" % (self.cat_id,
                                                                         self.evt_id, 
                                                                         self.cat_id)      
-#
-#
-# class Neighborhood_geometry(db.Model):
-#     """Neighborhood geometry information collected to use on the community score
-#     site.
-#     """
-#
-#     __tablename__ = 'nhood_geos'
-#
-#     geo_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-#     nhood_id = db.Column(db.Integer, db.ForeignKey('neighborhoods.nhood_id'),
-#                          nullable=False)
-#     latitude = db.Column(db.Float(50), nullable=False)
-#     longitude = db.Column(db.Float(50), nullable=False)
-#
-#     def __repr__(self):
-#         """Prints neighborhood geometry object in a more helpful way"""
-#
-#         return "<Neighborhood_geometry: geo_id=%s nhood_id=%s>" % (self.geo_id,
-#                                                                    self.nhood_id)
-#
-#
+
 
 ##############################################################################
-# Helper functions
+# Helper function
 
 def connect_to_db(app):
     """Connect the database to our Flask app."""
@@ -131,6 +128,7 @@ def connect_to_db(app):
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.app = app
     db.init_app(app)
+
 
 if __name__ == "__main__":
     # As a convenience, if we run this module interactively, it will leave

@@ -202,7 +202,7 @@ function setEventMarkers(data, map) {
         console.log(eventInfo);
 
         // AJAX call to server to search local events with provided address
-        $.post("/favorite", eventInfo)
+        $.post("/favorites", eventInfo)
           .done(function(msg) {
             alert("successfully added " + msg + "to favorites!");
           });

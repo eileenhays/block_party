@@ -2,7 +2,7 @@
 
 from jinja2 import StrictUndefined
 from flask import (Flask, jsonify, render_template, redirect, request,
-                   flash, session)
+                   flash, session, abort, url_for)
 from flask_debugtoolbar import DebugToolbarExtension
 
 #libraries for API requests
@@ -14,6 +14,8 @@ import os
 import api_data_handler
 from passlib.hash import bcrypt
 
+from flask_login import LoginManager, login_user, login_required, logout_user 
+
 
 app = Flask(__name__)
 
@@ -21,10 +23,17 @@ app = Flask(__name__)
 app.secret_key = "ABC"
 api_key = os.environ.get('MEETUP_API_KEY')
 
-# Normally, if you use an undefined variable in Jinja2, it fails
-# silently. This is horrible. Fix this so that, instead, it raises an
-# error.
+# Raises an error in Jinja
 app.jinja_env.undefined = StrictUndefined
+
+######################################
+#For Registration and Login
+######################################
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+login_manager.login_view = 'render_login_page'
 
 
 @app.route('/')
@@ -63,7 +72,7 @@ def render_registration_page():
     return render_template("registration.html")
 
 
-@app.route('/handle-regis', methods=['GET', 'POST'])
+@app.route('/handle-regis', methods=['POST'])
 def save_user_in_database():
     """Register new user and save info in database"""
 
@@ -82,23 +91,33 @@ def save_user_in_database():
 
     # Add address record in DB 
     if session != None:
-        address = Address(lat=session["lat"], lng=session["lng"], formatted_addy=session["address"])
-        db.session.add(address)
+        new_address = Address(lat=session["lat"], lng=session["lng"], formatted_addy=session["address"])
+        db.session.add(new_address)
         db.session.flush()
 
     # Add user record in DB 
-    if address.addy_id:
-        user = User(name=name, email=email, password=hashed_pw, addy_id=address.addy_id)
+    if new_address.addy_id:
+        new_user = User(name=name, email=email, password=hashed_pw, addy_id=new_address.addy_id)
     else:
-        user = User(name=name, email=email, password=hashed_pw)
+        new_user = User(name=name, email=email, password=hashed_pw)
 
-    db.session.add(user)
+    db.session.add(new_user)
     db.session.commit() 
 
+    login_user(new_user)
 
-    flash("registration was successful")
+    print "registration was successful and user logged in"
+    flash("registration was successful<br> user logged in")
 
     return redirect("/") 
+
+
+@login_manager.user_loader
+def load_user(user_id):
+
+    return User.query.get(user_id)
+
+
 
 
 @app.route('/login')
@@ -106,8 +125,6 @@ def render_login_page():
     """Shows the registration and login page. Gives user access to profile."""
 
     return render_template("login.html")
-
-    #import user manager.login 
 
 
 @app.route('/handle-login', methods=['POST'])
@@ -119,46 +136,54 @@ def check_login():
     password = user.password
 
     if bcrypt.verify(request.form.get("password"), password):
-        flash("Login successful!")
-        return redirect("/")
-    else:
-        flash("Email and/or password are invalid. Try again.")
-        return redirect("/login")
+        # Login and validate the user.
+        # user should be an instance of your `User` class
+        login_user(user)
+
+        flash('Logged in successfully.')
+
+        next = request.args.get('next')
+        # is_safe_url should check if the url is safe for redirects.
+        # See http://flask.pocoo.org/snippets/62/ for an example.
+        # if not is_safe_url(next):
+        #     return abort(400)
+
+        return redirect(next or url_for('index'))
+    return render_template('login.html', form=form)
 
 
-# @app.route('/logout')
-# def logout_user():
-#     """Logs user out of session"""
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    print session
+    flash("Logout successful!")
+    return redirect('/')
 
-#     if session: #save data in session
-#         del session['user_id']
-#         flash("Logout successful!")
-#     else:
-#         flash("You have to log in first.")
-
-#     return redirect("/")
-
-@app.route('/favorite')
+@app.route('/add-fave')
+@login_required
 def save_event_in_database():
     """Saves event information in database when user favorites""" 
 
+    pass
     name = request.args.get('name')
     url = request.args.get('url')
     return "My event: ", name
-#     name = request.args.get('name')
-#     time = request.args.get('time')
-#     url = request.args.get('url')
-#     position = request.args.get('position')
-#     user_id = #some SQLAlchemy query 
-#     addy_id = 
-#     catevt_id =
 
-#     event = Saved_event()
-#     datetime = db.Column(db.DateTime, nullable=False)
-#     name = db.Column(db.String(150), nullable=False)
-#     url = db.Column(db.String(500), nullable=False)
-#     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
-#     addy_id = db.Column(db.Integer, db.ForeignKey('addresses.addy_id'), nullable=False)
+
+@app.route('/favorites')
+@login_required
+def render_favorites_page():
+    """Shows user's favorites""" 
+
+    return render_template("favorites.html")
+
+
+@app.route('/profile')
+@login_required
+def render_profile_page():
+
+    return render_template("profile.html")
 
 
 # @app.route('/meetup-event-search')
@@ -179,8 +204,6 @@ def save_event_in_database():
 #     # print pprint(clean_data)
 
 #     return jsonify(clean_data)
-
-
 
 
 

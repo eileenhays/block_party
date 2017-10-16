@@ -17,10 +17,18 @@
 </head>
 
 <body>
+    <div class="header-nav-bar">
+        BLOCK PARTY LOGO!
+        <a href="/favorites">Favorites</a>
+    </div>
+
 	<div class="right-header-links"> 
-		save your events? <a href="/registration">register</a><br>
+        {% if current_user.is_authenticated %}
+            Hey, {{ current_user.name }}!<br>
+        {% endif %}
+        save your events? <a href="/registration">register</a><br>
         <a href="/login">login</a><br>
-		<a href="/logout">logout</a>
+        <a href="/logout">logout</a>
 	</div>
 
     {% block content %} put you content here {% endblock %}
