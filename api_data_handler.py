@@ -9,12 +9,24 @@ def convert_datetime_from_epoch(ms_from_epoch):
     # get time in UTC
     datetime_in_utc = datetime.utcfromtimestamp(ms_from_epoch / 1000.0).replace(tzinfo=pytz.utc)
 
-    # convert UTC time to local timezone
+    # convert UTC time to PST timezone
     tz = pytz.timezone('US/Pacific')
     datetime_local = datetime_in_utc.astimezone(tz)
 
     return datetime_local.strftime('%A, %B %d, %Y %H:%M %Z')
-    # event['utc_offset'] local time 
+
+
+def end_time(start_time, ms_duration):
+    """Returns endtime using event duration in milliseconds
+    Example:
+        HH:MM timezone
+        16:30
+    """
+
+    end_time = start_time + datetime.timedelta(milliseconds=ms_duration)
+    formatted_end_time = end_time.strfttime('%H:%M %Z')
+
+    return formatted_end_time
 
 # class Event(object):
 # # """Parses JSON data from various sources."""

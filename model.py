@@ -71,6 +71,7 @@ class Saved_event(db.Model):
     url = db.Column(db.String(500), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     addy_id = db.Column(db.Integer, db.ForeignKey('addresses.addy_id'), nullable=False)
+    # evt_source = (meetup, eventbrite, parks)
     # catevt_id = db.Column(db.Integer, db.ForeignKey('categories_events.catevt_id'), nullable=True)    
 
     def __repr__(self):

@@ -107,6 +107,8 @@ def render_login_page():
 
     return render_template("login.html")
 
+    #import user manager.login 
+
 
 @app.route('/handle-login', methods=['POST'])
 def check_login():
@@ -136,10 +138,13 @@ def check_login():
 
 #     return redirect("/")
 
-# @app.route('/favorite')
-# def save_event_in_database(evt_obj):
-#     """Saves event information in database when user favorites""" 
+@app.route('/favorite')
+def save_event_in_database():
+    """Saves event information in database when user favorites""" 
 
+    name = request.args.get('name')
+    url = request.args.get('url')
+    return "My event: ", name
 #     name = request.args.get('name')
 #     time = request.args.get('time')
 #     url = request.args.get('url')

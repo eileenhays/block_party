@@ -167,7 +167,7 @@ function setEventMarkers(data, map) {
                                             'data-name="' + place.name + '"' + 
                                             'data-time="' + place.time + '"' + 
                                             'data-position="' + place.position + '"' + 
-                                            '>favorite</button>"'+
+                                            '>favorite</button>'+
                       '</div>';    
     // console.log(contentString);
     }
@@ -192,23 +192,26 @@ function setEventMarkers(data, map) {
       placeInfowindow.setContent(this.infowindow);
       placeInfowindow.open( map, this )
       // Saves the event details to variables when favorite button clicked
-      /*$('.fave').click(function(){
-        var eventInfo = {};
-        // var eventInfo['name'] = $(this).attr('data-name');
-        var eventInfo['url'] = $(this).attr('data-url');
-        var eventInfo['time'] = $(this).attr('data-time');
-        var eventInfo['position'] = $(this).attr('data-position');
+      $('.fave').click(function(){
+        var eventInfo = {
+          name: $(this).attr('data-name'),
+          time: $(this).attr('data-time'),
+          url: $(this).attr('data-url'),
+          position: $(this).attr('data-position')  
+        };
+        console.log(eventInfo);
 
-          // AJAX call to server to search local events with provided address
-          $.ajax({url: "/favorite", 
-            data: eventInfo 
+        // AJAX call to server to search local events with provided address
+        $.post("/favorite", eventInfo)
+          .done(function(msg) {
+            alert("successfully added " + msg + "to favorites!");
           });
 
-      });*/
+       //check to see if this gives data from the last marker, .bind(this), attach a scope to marker 
       // hideAllInfoWindows(map, this.infowindow);
       // placeInfowindow.open(map, this); 
-    });
-
+      });
+    });  
     // Expand map boundaries to include new event marker
     bounds.extend(place.position);    
 
@@ -244,6 +247,7 @@ function listEventsOnPage(eventPlaces) {
 
   eventList.innerHTML = contentText;
 }
+
 
 
 
