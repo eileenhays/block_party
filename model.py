@@ -52,12 +52,6 @@ class User(UserMixin, db.Model):
                                                         self.email)
 
     # Necessary functions for Flask-login
-    # def is_authenticated(self):
-    #     return True
-    # def is_active(self):
-    #     return True
-    # def is_anonymous(self):
-    #     return False
     def get_id(self):
         return str(self.user_id) 
 
@@ -95,9 +89,7 @@ class Saved_event(db.Model):
     def __repr__(self):
         """Prints saved_location object in a more helpful way"""
 
-        return "<Saved_events: evt_id=%s user_id=%s addy_id=%s>" % (self.evt_id,
-                                                                    self.user_id,
-                                                                    self.addy_id)  
+        return "<Saved_events: evt_id=%s name=%s>" % (self.evt_id, self.name)  
 
 
 class Category_events(db.Model):

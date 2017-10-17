@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Favorites{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+
+  <div id="user-info"> 
+	  <img src="/static/images/profile_pic.jpg" height=100px>
+    <h2>{{ current_user.name }}'s community</h2>
+
+	  Email: {{ current_user.email }}<br>
+	  Saved Address: 
+    {% if current_user.addy_id %}
+      {{ current_user.addy_id }}
+    {% endif %}
+
+  </div>
+
+  <div id="saved-events">
+    <ul>
+      SAVED EVENTS GO HERE EVENTUALLY
+	</ul>
+  </div>
+
+ 
+{% endblock %}

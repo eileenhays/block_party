@@ -7,7 +7,7 @@
     	{% if messages %}
     		<ul class=flashes>
     			{% for message in messages %}
-    			<li>{{ message }}</li>
+    			 {{ message }}
     			{% endfor %}
     		</ul>
     	{% endif %}
@@ -18,8 +18,8 @@
 
 <body>
     <div class="header-nav-bar">
-        BLOCK PARTY LOGO!
-        <a href="/favorites">Favorites</a>
+        <a href="/"><img src="/static/images/blocks.svg" id="logo"> blockparty</a>
+        <a href="/favorites">favorites</a>
     </div>
 
 	<div class="right-header-links"> 

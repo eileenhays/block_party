@@ -9,7 +9,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from sys import argv
 from pprint import pprint, pformat
 
-from model import db, connect_to_db, User, Address
+from model import db, connect_to_db, User, Address, Saved_event
 import os
 import api_data_handler
 from passlib.hash import bcrypt
@@ -47,7 +47,6 @@ def index():
 def search_for_events():
     """Request events from Meetup API and returns a JSON with local events."""
 
-    name = request.args.get('name')
     address = request.args.get('address')
     lat = request.args.get('lat')
     lng = request.args.get('lng')
@@ -58,7 +57,6 @@ def search_for_events():
     print session
 
     raw_data = api_data_handler.meetup_api_call(lat, lng, api_key)
-    # print pprint(raw_data)
     clean_data = api_data_handler.meetup_jsonify_events(raw_data)
     # print pprint(clean_data)
 
@@ -118,8 +116,6 @@ def load_user(user_id):
     return User.query.get(user_id)
 
 
-
-
 @app.route('/login')
 def render_login_page():
     """Shows the registration and login page. Gives user access to profile."""
@@ -160,15 +156,31 @@ def logout():
     flash("Logout successful!")
     return redirect('/')
 
-@app.route('/add-fave')
+
+@app.route('/add-fave', methods=['POST'])
 @login_required
 def save_event_in_database():
     """Saves event information in database when user favorites""" 
 
-    pass
-    name = request.args.get('name')
-    url = request.args.get('url')
-    return "My event: ", name
+    evt_name = request.form.get("name")
+    time = request.form.get("time")
+    url = request.form.get("url")
+    lat = request.form.get("lat")
+    lng = request.form.get("lng")
+    address = request.form.get("address")
+
+    # add event address 
+    new_address = Address(lat=lat, lng=lng, formatted_addy=address)
+    db.session.add(new_address)
+    db.session.flush()
+
+    new_evt = Saved_event(name=evt_name, datetime=time, url=url, user_id=session['user_id'], addy_id=new_address.addy_id)
+
+    db.session.add(new_evt)
+    db.session.commit() 
+
+    print "New event was added to favorites"
+    return evt_name
 
 
 @app.route('/favorites')
@@ -184,26 +196,6 @@ def render_favorites_page():
 def render_profile_page():
 
     return render_template("profile.html")
-
-
-# @app.route('/meetup-event-search')
-# def search_specific_meetup_event():
-#     """Request events from Meetup API and returns a JSON with local events."""
-
-#     evt_id = request.args.get('evt_id')
-
-
-#     session["address"] = address
-#     session["lat"] = lat
-#     session["lng"] = lng
-#     print session
-
-#     raw_data = api_data_handler.meetup_api_call(lat, lng, api_key)
-#     # print pprint(raw_data)
-#     clean_data = api_data_handler.meetup_jsonify_events(raw_data)
-#     # print pprint(clean_data)
-
-#     return jsonify(clean_data)
 
 
 

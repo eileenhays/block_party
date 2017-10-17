@@ -166,8 +166,10 @@ function setEventMarkers(data, map) {
                       '<button class="fave" data-url="' + place.url + '"' + 
                                             'data-name="' + place.name + '"' + 
                                             'data-time="' + place.time + '"' + 
-                                            'data-position="' + place.position + '"' + 
-                                            '>favorite</button>'+
+                                            'data-lat="' + place.position.lat + '"' +
+                                            'data-lng="' + place.position.lng + '"' +  
+                                            'data-address="' + place.address + '"' +
+                                            '>add to favorites</button>'+
                       '</div>';    
     // console.log(contentString);
     }
@@ -192,24 +194,28 @@ function setEventMarkers(data, map) {
       placeInfowindow.setContent(this.infowindow);
       placeInfowindow.open( map, this )
       // Saves the event details to variables when favorite button clicked
-      $('.fave').click(function(){
+      $('.fave').click(function(evt){
+        evt.preventDefault();
+
+        var lat = $(this).attr('data-lat');
+        var lng = $(this).attr('data-lng');
+        var address = reverseGeocode(lat, lng);
+
         var eventInfo = {
           name: $(this).attr('data-name'),
           time: $(this).attr('data-time'),
           url: $(this).attr('data-url'),
-          position: $(this).attr('data-position')  
+          lat: lat,
+          lng: lng,
+          address: address  
         };
         console.log(eventInfo);
 
         // AJAX call to server to search local events with provided address
-        $.post("/favorites", eventInfo)
+        $.post("/add-fave", eventInfo)
           .done(function(msg) {
-            alert("successfully added " + msg + "to favorites!");
+            alert(msg + " was successfully added to favorites!");
           });
-
-       //check to see if this gives data from the last marker, .bind(this), attach a scope to marker 
-      // hideAllInfoWindows(map, this.infowindow);
-      // placeInfowindow.open(map, this); 
       });
     });  
     // Expand map boundaries to include new event marker
@@ -246,6 +252,18 @@ function listEventsOnPage(eventPlaces) {
   var contentText = JSON.stringify(eventPlaces);
 
   eventList.innerHTML = contentText;
+}
+
+function reverseGeocode(lat, lng) {
+  var latlng = lat + ',' + lng;
+
+  $.get('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + latlng,
+        function(result) {
+          var formatted_address = result['results']['formatted_address'];
+          console.log(formatted_address);
+          return formatted_address;
+        }
+  );
 }
 
 
