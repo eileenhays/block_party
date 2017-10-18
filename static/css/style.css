@@ -2,6 +2,13 @@
 	text-align: right;
 }	
 
+.evt-description {
+	display: inline-block; 
+	font-size: 10pt;
+	font-family: Georgia, Serif;
+}
+
 #logo {
 	font-size: 1em;
 }
+

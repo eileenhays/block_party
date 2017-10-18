@@ -38,6 +38,9 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(100), nullable=False)
     addy_id = db.Column(db.ForeignKey(Address.addy_id), nullable=True)
 
+    address = db.relationship("Address", backref=db.backref("users", 
+                                                            order_by=user_id))
+
     def __init__(self, name, email, password, addy_id):
         self.name = name
         self.email = email
@@ -85,6 +88,12 @@ class Saved_event(db.Model):
     addy_id = db.Column(db.Integer, db.ForeignKey('addresses.addy_id'), nullable=False)
     # evt_source = (meetup, eventbrite, parks)
     # catevt_id = db.Column(db.Integer, db.ForeignKey('categories_events.catevt_id'), nullable=True)    
+
+    user = db.relationship("User", backref=db.backref("saved_events", 
+                                                      order_by=evt_id))
+
+    address = db.relationship("Address", backref=db.backref("saved_events", 
+                                                            order_by=evt_id))
 
     def __repr__(self):
         """Prints saved_location object in a more helpful way"""

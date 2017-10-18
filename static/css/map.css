@@ -1,3 +1,9 @@
+.evt-description {
+  display: inline-block; 
+  font-size: 10pt;
+  font-family: Georgia, Serif;
+}
+
 #map {
  height: 600px;
  width: 600px;

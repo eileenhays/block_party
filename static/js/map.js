@@ -3,6 +3,7 @@
 var map;
 var centerSF = {lat: 37.7749, lng: -122.4194}; 
 var markers = [];
+var event_address = '';
 
 
 function initAutocomplete() {
@@ -12,19 +13,6 @@ function initAutocomplete() {
     zoom: 12,
     mapTypeId: 'roadmap'
   });
-
-  // var input;
-  // // if localStorage has something saved in savedLocation {
-  // //   then, use the location as an input for the search box
-  // // }
-  // //Check if there is already a saved location saved in the HTML5 storage 
-  // if ('savedLocation' in localStorage) {
-  //   input = localStorage['savedLocation'];
-  // }
-  // else {
-  // // Create search box and link it to the UI element.
-  //   input = document.getElementById('pac-input');
-  // }
 
   // Create search box and link it to the UI element.
   var input = document.getElementById('pac-input');
@@ -73,11 +61,11 @@ function setPrimaryMarker(map, searchBox, markers) {
       }
 
       var primaryIcon = {
-        url: "/static/images/star_icon.svg",
-        size: new google.maps.Size(71, 71),
+        url: "/static/images/star.svg",
+        size: new google.maps.Size(71, 71), 
         origin: new google.maps.Point(0, 0),
-        anchor: new google.maps.Point(17, 34),
-        scaledSize: new google.maps.Size(25, 25)
+        anchor: new google.maps.Point(17, 34), 
+        scaledSize: new google.maps.Size(40, 40) //25,25
       };
 
       // Create a marker for the primary address
@@ -116,11 +104,7 @@ function searchWithPrimaryLocation(places) {
   primaryLocation["lat"] = places[0].geometry.location.lat();
   primaryLocation["lng"] = places[0].geometry.location.lng();            
 
-  console.log(primaryLocation);
-
-  // Save the location to a local storage session (persists in browser)
-  // localStorage.setItem('savedLocation', places[0].formatted_address);
-  // console.log("saved session:" + localStorage.savedLocation);
+  // console.log(primaryLocation);
 
   // AJAX call to server to search local events with provided address
   $.ajax({url: "/search-events", 
@@ -147,7 +131,6 @@ function setEventMarkers(data, map) {
   // Add a marker and info window to each event place
   for (var i = 0; i < eventPlaces.length; i++) {
     var place = eventPlaces[i]; 
-    console.log(place.position);
 
     // Skips over the place if position empty
     if (jQuery.isEmptyObject(place.position) || place.position.lat == 0 && place.position.lng == 0) {
@@ -160,7 +143,8 @@ function setEventMarkers(data, map) {
     else {
       var shortEventDescript = place.description.slice(0, 281); 
       contentString = '<div id="windowContent">' + 
-                      '<h3><a href="' + place.url + '">' + place.name + '</a></h3>' +
+                      '<h3><a href="' + place.url + '" target="_blank">' + place.name + '</a></h3>' +
+                      '<strong>Group: </strong>' + place.group_name + '<br>' +
                       '<p><strong>' + place.time + '</strong></p>' + 
                       '<p>' + shortEventDescript + '...</p>' + 
                       '<button class="fave" data-url="' + place.url + '"' + 
@@ -179,9 +163,18 @@ function setEventMarkers(data, map) {
       maxWidth: 200
     });
 
+    var eventIcon = {
+        url: "/static/images/pin.svg",
+        size: new google.maps.Size(71, 71), 
+        origin: new google.maps.Point(0, 0),
+        anchor: new google.maps.Point(17, 34), 
+        scaledSize: new google.maps.Size(45, 45) 
+      };
+
     var eventMarker = new google.maps.Marker({
       map: map,
       title: place.name,
+      icon: eventIcon,
       position: place.position,
       infowindow: contentString
     });
@@ -193,21 +186,25 @@ function setEventMarkers(data, map) {
     eventMarker.addListener('click', function(evt) {
       placeInfowindow.setContent(this.infowindow);
       placeInfowindow.open( map, this )
+      reverseGeocode(place.position.lat, place.position.lng);
+
+
+      // Show event info on side bar
+
+
       // Saves the event details to variables when favorite button clicked
       $('.fave').click(function(evt){
         evt.preventDefault();
 
         var lat = $(this).attr('data-lat');
         var lng = $(this).attr('data-lng');
-        var address = reverseGeocode(lat, lng);
-
         var eventInfo = {
           name: $(this).attr('data-name'),
           time: $(this).attr('data-time'),
           url: $(this).attr('data-url'),
           lat: lat,
           lng: lng,
-          address: address  
+          address: event_address  
         };
         console.log(eventInfo);
 
@@ -230,13 +227,6 @@ function setEventMarkers(data, map) {
 
 }
 
-// function hideAllInfoWindows(map, placeInfowindow) {
-//   // Closes info windows when user clicks elsewhere
-//   markers.forEach(function(marker) {
-//     placeInfowindow.close(map, marker);
-//   });
-// }
-
 function clearOldMarkers(markers) {
   // Clear out the old event markers.
   markers.forEach(function(marker) {
@@ -246,25 +236,58 @@ function clearOldMarkers(markers) {
 }
 
 function listEventsOnPage(eventPlaces) {
-  // Full list of events on the side of the map
+  // Full list of events on the bottom of the map
   var eventList = document.getElementById('events_list');
+  var contentString = '';
+  
+  for (var i = 0; i < eventPlaces.length; i++) {
+    var place = eventPlaces[i]; 
+    var evtString = '<h3><a href="' + place.url + '" target="_blank">' + place.name + '</a></h3>' +
+                        '<strong>Group: </strong>' + place.group_name + '<br>' +
+                        '<strong>' + place.time + '</strong><br>' + 
+                        '<button class="fave" data-url="' + place.url + '"' + 
+                                              'data-name="' + place.name + '"' + 
+                                              'data-time="' + place.time + '"' + 
+                                              'data-lat="' + place.position.lat + '"' +
+                                              'data-lng="' + place.position.lng + '"' +  
+                                              'data-address="' + place.address + '"' +
+                                              '>add to favorites</button>' + 
+                        '<p class="evt-description">' + place.description + '</p>' + 
+                        '<button class="fave" data-url="' + place.url + '"' + 
+                                              'data-name="' + place.name + '"' + 
+                                              'data-time="' + place.time + '"' + 
+                                              'data-lat="' + place.position.lat + '"' +
+                                              'data-lng="' + place.position.lng + '"' +  
+                                              'data-address="' + place.address + '"' +
+                                              '>add to favorites</button>' + '<br><br>';    
 
-  var contentText = JSON.stringify(eventPlaces);
+    contentString += evtString;
+  }
 
-  eventList.innerHTML = contentText;
+  eventList.innerHTML = contentString;
 }
 
 function reverseGeocode(lat, lng) {
   var latlng = lat + ',' + lng;
-
+  var address = '';
   $.get('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + latlng,
         function(result) {
-          var formatted_address = result['results']['formatted_address'];
-          console.log(formatted_address);
+          var formatted_address = result['results'][0]['formatted_address'];
+          
+          address += formatted_address;
           return formatted_address;
         }
   );
+  event_address += address;
+  console.log(address);
+  // return address;
 }
+
+// function selectedEventInfo(place) {
+//   var eventInfo = document.getElementById('selected_event');
+
+//   eventInfo.innerHTML = <h2>place.name</h2>
+// }
 
 
 

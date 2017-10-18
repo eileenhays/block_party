@@ -13,15 +13,18 @@
 	  Email: {{ current_user.email }}<br>
 	  Saved Address: 
     {% if current_user.addy_id %}
-      {{ current_user.addy_id }}
+      {{ current_user.address.formatted_addy }}
     {% endif %}
 
   </div>
 
   <div id="saved-events">
     <ul>
-      SAVED EVENTS GO HERE EVENTUALLY
-	</ul>
+    {% for event in saved_events %}
+      <strong><a href="{{ event.url }}" target="_blank">{{ event.name }}</a></strong>
+      <li>Time: {{ event.datetime }}</li><br>
+    {% endfor %}
+  	</ul>
   </div>
 
  

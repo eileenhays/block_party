@@ -1,4 +1,4 @@
-"""Community Events Server File"""
+"""BLOCK PARTY Server File"""
 
 from jinja2 import StrictUndefined
 from flask import (Flask, jsonify, render_template, redirect, request,
@@ -11,17 +11,18 @@ from pprint import pprint, pformat
 
 from model import db, connect_to_db, User, Address, Saved_event
 import os
-import api_data_handler
+from meetup_handler import Meetup_API
 from passlib.hash import bcrypt
 
-from flask_login import LoginManager, login_user, login_required, logout_user 
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user 
 
 
 app = Flask(__name__)
-
-# Required to use Flask sessions and the debug toolbar
 app.secret_key = "ABC"
-api_key = os.environ.get('MEETUP_API_KEY')
+
+MEETUP_API_KEY = os.environ.get('MEETUP_API_KEY')
+EVENTBRITE_TOKEN = os.environ.get('EVENTBRITE_OAUTH_TOKEN')
+EVENTBRITE_URL = "https://www.eventbriteapi.com/v3/"
 
 # Raises an error in Jinja
 app.jinja_env.undefined = StrictUndefined
@@ -56,8 +57,8 @@ def search_for_events():
     session["lng"] = lng
     print session
 
-    raw_data = api_data_handler.meetup_api_call(lat, lng, api_key)
-    clean_data = api_data_handler.meetup_jsonify_events(raw_data)
+    raw_data = Meetup_API.find_events(lat, lng, MEETUP_API_KEY)
+    clean_data = Meetup_API.sanitize_data(raw_data)
     # print pprint(clean_data)
 
     return jsonify(clean_data)
@@ -188,14 +189,55 @@ def save_event_in_database():
 def render_favorites_page():
     """Shows user's favorites""" 
 
-    return render_template("favorites.html")
+    user_id = current_user.user_id
+    saved_events = Saved_event.query.filter_by(user_id=user_id).all()
+
+    return render_template("favorites.html", saved_events=saved_events)
 
 
-@app.route('/profile')
-@login_required
-def render_profile_page():
+@app.route('/eventbrite-events')
+def find_eb_events(lat, lng):
+    """Search for event details on Eventbrite"""
 
-    return render_template("profile.html")
+    location_lat = lat
+    location_lng = lng
+    distance = 2
+    measurement = 'mi'
+    sort_by = 'date'
+
+    if location and distance and measurement:
+        distance = distance + measurement
+
+        payload = {'location.latitude': lat,
+                   'location.longitude': lng,
+                   'location.within': distance,
+                   'sort_by': sort_by,
+                   }
+
+        # For GET requests to Eventbrite's API, the token could also be sent as a
+        # URL parameter with the key 'token'
+        headers = {'Authorization': 'Bearer ' + EVENTBRITE_TOKEN}
+
+        response = requests.get(EVENTBRITE_URL + "events/search/",
+                                params=payload,
+                                headers=headers)
+        data = response.json()
+
+        if response.ok:
+            events = data['events']
+        else:
+            flash(":( No parties: " + data['error_description'])
+            events = []
+
+        return render_template("evt_analysis.html",
+                               data=pformat(data),
+                               results=events)
+
+    # If the required info isn't in the request, redirect to the search form
+    else:
+        flash("Please provide all the required information!")
+        return redirect("/afterparty-search")
+
 
 
 
@@ -208,7 +250,7 @@ if __name__ == "__main__":
     connect_to_db(app)
 
     # Use the DebugToolbar
-    DebugToolbarExtension(app)
+    # DebugToolbarExtension(app)
 
 
 
