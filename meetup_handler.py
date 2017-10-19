@@ -61,7 +61,8 @@ class Meetup_API(object):
                 event_dict['position']['lat'] = event['venue']['lat']
                 event_dict['position']['lng'] = event['venue']['lon']
                 if 'address' in event['venue']:
-                    event_dict['address'] = event['venue']['address_1'] + event['venue']['city'] + ',' + event['venue']['state'] + event['venue']['zip']
+                    formatted_addy = event['venue']['address_1'] + event['venue']['address_2'] + event['venue']['city'] + ',' + event['venue']['state'] + event['venue']['zip']
+                    event_dict['address'] = formatted_addy
                     print "\n\n\nAddress: ", event_dict['address']
             if 'category' in event['group']:
                 event_dict['category'] = event['group']['category']

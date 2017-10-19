@@ -55,8 +55,11 @@ def search_for_events():
     session["lng"] = lng
     print session
 
-    raw_data = Meetup_API.find_events(lat, lng)
-    clean_data = Meetup_API.sanitize_data(raw_data)
+    # raw_data = Meetup_API.find_events(lat, lng)
+    # clean_data = Meetup_API.sanitize_data(raw_data)
+    results = Eventbrite_API.find_events(lat, lng)
+    clean_data = Eventbrite_API.sanitize_data(results)
+
     # print pprint(clean_data)
 
     return jsonify(clean_data)
@@ -222,8 +225,6 @@ def find_eb_events():
 
     results = Eventbrite_API.find_events(lat, lng)
     clean_data = Eventbrite_API.sanitize_data(results)
-
-    pprint(results)
 
     return render_template("evt_analysis.html",
                            # data=pformat(data),

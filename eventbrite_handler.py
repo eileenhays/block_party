@@ -4,6 +4,7 @@ import requests
 import json
 import os
 from pprint import pprint, pformat
+from model import db, connect_to_db, User, Address, Saved_event, Category, Source
 
 
 class Eventbrite_API(object):
@@ -64,23 +65,34 @@ class Eventbrite_API(object):
 
 
     @classmethod
-    def find_org(cls, org_id):
+    def find_group(cls, organizer_id):
         """API endpoint call that returns organization name"""
 
         headers = {'Authorization': 'Bearer ' + cls.EVENTBRITE_TOKEN}
 
-        response = requests.get(cls.EVENTBRITE_URL + "/categories/" + org_id + "/",
+        response = requests.get(cls.EVENTBRITE_URL + "/organizers/" + organizer_id + "/",
                             headers=headers)
-        organization = response.json()
+        org_data = response.json()
 
-        return organization  
+        return org_data['name']  
+
+    @classmethod
+    def find_address(cls, venue_id):
+        """API endpoint call that returns address data"""
+
+        headers = {'Authorization': 'Bearer ' + cls.EVENTBRITE_TOKEN}
+
+        response = requests.get(cls.EVENTBRITE_URL + "/venues/" + venue_id + "/",
+                            headers=headers)
+        address_data = response.json()
+
+        return address_data  
 
 
     @classmethod    
     def sanitize_data(cls, events_list):
         """"Parses out relevant data from the Meetup API response, and 
         dumps clean event info into JSON."""
-        # print data
 
         map_events = {}
         #new dictionary created for every event
@@ -88,22 +100,31 @@ class Eventbrite_API(object):
             event_dict = {}
 
             if 'status' != 'canceled' or 'completed':
+                event_dict['evt_id'] = event['id']
+                event_dict['src_id'] = 'evtb'
+                event_dict['datetime'] = event['start']['local']  #sync up everywhere
+                # event_dict['end_time']  = event['end']['local']  
                 event_dict['name'] = event['name']['text']
                 if 'description' in event:
-                    event_dict['description'] = event['description']
-                event_dict['start_time'] = event['start']['local']  #sync up everywhere
-                event_dict['end_time']  = event['end']['local']     
+                    event_dict['description'] = event['description']['text']   
                 event_dict['url'] = event['url']
-                event_dict['group_name'] = event['organizer_id'] ## 
-                event_dict['category'] = event['category_id'] ## 
-                event_dict['format'] = event['format_id'] ##
-                # event_dict['position'] = {}     
-                event_dict['venue'] = event['venue_id']
-
+                event_dict['group'] = cls.find_group(event['organizer_id'])
+                # event_dict['format'] = event['format_id'] ##
+                event_dict['position'] = {}     
+                address_data = cls.find_address(event['venue_id'])  
+                event_dict['position']['lat'] = address_data['latitude'] 
+                event_dict['position']['lng'] = address_data['longitude']
+                #   if 'address' in position_data:
+                event_dict['address'] = address_data['address']['localized_address_display']
+                
+                all_cats = db.session.query(Category.name)
+                cat_name = all_cats.filter(Category.cat_id == event['category_id']).first()
+                event_dict['category'] = cat_name
+                 
                 evt_id = event['id']
                 map_events[evt_id] = event_dict #add each to map_events
 
         return map_events
 
+
 # if __name__ == "__main__":
-#   Eventbrite_API.find_categories()

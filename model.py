@@ -124,23 +124,7 @@ class Source(db.Model):
         """Prints source object in a more helpful way"""
 
         return "<Source: src_id=%s name=%s>" % (self.src_id, self.name)  
-
-
-# class Category_events(db.Model):
-#     """Association table for categories and saved_events."""
-
-#     __tablename__ = 'categories_events'
-
-#     catevt_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-#     evt_id = db.Column(db.Integer, db.ForeignKey('saved_events.evt_id'), nullable=False)
-#     cat_id = db.Column(db.Integer, db.ForeignKey('categories.cat_id'), nullable=True) 
-
-#     def __repr__(self):
-#         """Prints categories_events object in a more helpful way"""
-
-#         return "<Category_events: catevt_id=%s evt_id=%s cat_id=%s>" % (self.cat_id,
-#                                                                         self.evt_id, 
-#                                                                         self.cat_id)      
+  
 
 
 ##############################################################################
