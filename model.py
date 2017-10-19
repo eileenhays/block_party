@@ -47,7 +47,6 @@ class User(UserMixin, db.Model):
         self.password = password
         self.addy_id = addy_id
 
-
     def __repr__(self):
         """Prints user object in a more helpful way"""
 
@@ -65,14 +64,19 @@ class Category(db.Model):
     __tablename__ = 'categories'
 
     cat_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(50), nullable=False, unique=True) 
-    description = db.Column(db.String(100), nullable=False, unique=True)
+    name = db.Column(db.String(50), nullable=False) 
+    short_name = db.Column(db.String(25), nullable=True)
+    src_id = db.Column(db.String(4), db.ForeignKey('sources.src_id'), nullable=False) 
+
+    source = db.relationship("Source", backref=db.backref("categories", 
+                                                          order_by=cat_id))
 
     def __repr__(self):
         """Prints category object in a more helpful way"""
 
-        return "<Category: cat_id=%s name=%s>" % (self.cat_id,
-                                                  self.name)
+        return "<Category: cat_id=%s name=%s src_id=%s>" % (self.cat_id,
+                                                            self.name, 
+                                                            self.src_id)
 
 
 class Saved_event(db.Model):
@@ -80,42 +84,63 @@ class Saved_event(db.Model):
 
     __tablename__ = 'saved_events'
 
-    evt_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    evt_id = db.Column(db.String(25), primary_key=True)
     datetime = db.Column(db.DateTime, nullable=False)
     name = db.Column(db.String(150), nullable=False)
+    group_name = db.Column(db.String(150), nullable=False)
     url = db.Column(db.String(500), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     addy_id = db.Column(db.Integer, db.ForeignKey('addresses.addy_id'), nullable=False)
-    # evt_source = (meetup, eventbrite, parks)
-    # catevt_id = db.Column(db.Integer, db.ForeignKey('categories_events.catevt_id'), nullable=True)    
+    cat_id = db.Column(db.Integer, db.ForeignKey('categories.cat_id'), nullable=True)    
+    src_id = db.Column(db.String(4), db.ForeignKey('sources.src_id'), nullable=False) 
 
     user = db.relationship("User", backref=db.backref("saved_events", 
-                                                      order_by=evt_id))
+                                                      order_by=datetime))
 
     address = db.relationship("Address", backref=db.backref("saved_events", 
-                                                            order_by=evt_id))
+                                                            order_by=datetime))
+
+    category = db.relationship("Category", backref=db.backref("saved_events", 
+                                                              order_by=datetime))
+
+    source = db.relationship("Source", backref=db.backref("saved_events", 
+                                                          order_by=datetime))
 
     def __repr__(self):
-        """Prints saved_location object in a more helpful way"""
+        """Prints event object in a more helpful way"""
 
         return "<Saved_events: evt_id=%s name=%s>" % (self.evt_id, self.name)  
 
 
-class Category_events(db.Model):
-    """Association table for categories and saved_events."""
+class Source(db.Model):
+    """Source of event information"""
 
-    __tablename__ = 'categories_events'
+    __tablename__ = 'sources'
 
-    catevt_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    evt_id = db.Column(db.Integer, db.ForeignKey('saved_events.evt_id'), nullable=False)
-    cat_id = db.Column(db.Integer, db.ForeignKey('categories.cat_id'), nullable=True) 
+    src_id = db.Column(db.String(4), primary_key=True)
+    name = db.Column(db.String(25), nullable=False)
 
     def __repr__(self):
-        """Prints categories_events object in a more helpful way"""
+        """Prints source object in a more helpful way"""
 
-        return "<Category_events: catevt_id=%s evt_id=%s cat_id=%s>" % (self.cat_id,
-                                                                        self.evt_id, 
-                                                                        self.cat_id)      
+        return "<Source: src_id=%s name=%s>" % (self.src_id, self.name)  
+
+
+# class Category_events(db.Model):
+#     """Association table for categories and saved_events."""
+
+#     __tablename__ = 'categories_events'
+
+#     catevt_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+#     evt_id = db.Column(db.Integer, db.ForeignKey('saved_events.evt_id'), nullable=False)
+#     cat_id = db.Column(db.Integer, db.ForeignKey('categories.cat_id'), nullable=True) 
+
+#     def __repr__(self):
+#         """Prints categories_events object in a more helpful way"""
+
+#         return "<Category_events: catevt_id=%s evt_id=%s cat_id=%s>" % (self.cat_id,
+#                                                                         self.evt_id, 
+#                                                                         self.cat_id)      
 
 
 ##############################################################################

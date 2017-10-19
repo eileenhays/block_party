@@ -48,7 +48,7 @@ function setPrimaryMarker(map, searchBox, markers) {
 
     clearOldMarkers(markers); 
     
-    console.log(places);
+    // console.log(places);
 
     // Instantiate boundaries for the map 
     var bounds = new google.maps.LatLngBounds();
@@ -131,6 +131,7 @@ function setEventMarkers(data, map) {
   // Add a marker and info window to each event place
   for (var i = 0; i < eventPlaces.length; i++) {
     var place = eventPlaces[i]; 
+    console.log(place);
 
     // Skips over the place if position empty
     if (jQuery.isEmptyObject(place.position) || place.position.lat == 0 && place.position.lng == 0) {
@@ -144,15 +145,19 @@ function setEventMarkers(data, map) {
       var shortEventDescript = place.description.slice(0, 281); 
       contentString = '<div id="windowContent">' + 
                       '<h3><a href="' + place.url + '" target="_blank">' + place.name + '</a></h3>' +
-                      '<strong>Group: </strong>' + place.group_name + '<br>' +
-                      '<p><strong>' + place.time + '</strong></p>' + 
+                      '<strong>Group: </strong>' + place.group + '<br>' +
+                      '<p><strong>' + place.datetime + '</strong></p>' + 
                       '<p>' + shortEventDescript + '...</p>' + 
-                      '<button class="fave" data-url="' + place.url + '"' + 
+                      '<button class="fave" data-evt_id="' + place.evt_id + '"' +
+                                            'data-datetime="' + place.datetime + '"' +
                                             'data-name="' + place.name + '"' + 
-                                            'data-time="' + place.time + '"' + 
+                                            'data-url="' + place.url + '"' + 
+                                            'data-group="' + place.group + '"' + 
                                             'data-lat="' + place.position.lat + '"' +
                                             'data-lng="' + place.position.lng + '"' +  
                                             'data-address="' + place.address + '"' +
+                                            'data-cat="' + place.category + '"' +  
+                                            'data-src_id="mtup"' +                                                                               
                                             '>add to favorites</button>'+
                       '</div>';    
     // console.log(contentString);
@@ -186,7 +191,7 @@ function setEventMarkers(data, map) {
     eventMarker.addListener('click', function(evt) {
       placeInfowindow.setContent(this.infowindow);
       placeInfowindow.open( map, this )
-      reverseGeocode(place.position.lat, place.position.lng);
+      // reverseGeocode(place.position.lat, place.position.lng);
 
 
       // Show event info on side bar
@@ -199,12 +204,16 @@ function setEventMarkers(data, map) {
         var lat = $(this).attr('data-lat');
         var lng = $(this).attr('data-lng');
         var eventInfo = {
+          evt_id: $(this).attr('data-evt_id'),
+          datetime: $(this).attr('data-datetime'),
           name: $(this).attr('data-name'),
-          time: $(this).attr('data-time'),
           url: $(this).attr('data-url'),
+          group_name: $(this).attr('data-group'),
           lat: lat,
           lng: lng,
-          address: event_address  
+          address: $(this).attr('data-address'),
+          category: $(this).attr('data-cat'), 
+          src_id: $(this).attr('data-src_id'), 
         };
         console.log(eventInfo);
 
@@ -242,24 +251,23 @@ function listEventsOnPage(eventPlaces) {
   
   for (var i = 0; i < eventPlaces.length; i++) {
     var place = eventPlaces[i]; 
+    // console.log(place);
     var evtString = '<h3><a href="' + place.url + '" target="_blank">' + place.name + '</a></h3>' +
-                        '<strong>Group: </strong>' + place.group_name + '<br>' +
-                        '<strong>' + place.time + '</strong><br>' + 
-                        '<button class="fave" data-url="' + place.url + '"' + 
-                                              'data-name="' + place.name + '"' + 
-                                              'data-time="' + place.time + '"' + 
-                                              'data-lat="' + place.position.lat + '"' +
-                                              'data-lng="' + place.position.lng + '"' +  
-                                              'data-address="' + place.address + '"' +
-                                              '>add to favorites</button>' + 
+                        '<strong>Group: </strong>' + place.group + '<br>' +
+                        '<strong>' + place.datetime + '</strong><br>' + 
+                        '<button class="fave" data-evt_id="' + place.evt_id + '"' +
+                                            'data-datetime="' + place.datetime + '"' +
+                                            'data-name="' + place.name + '"' + 
+                                            'data-url="' + place.url + '"' + 
+                                            'data-group="' + place.group + '"' + 
+                                            'data-lat="' + place.position.lat + '"' +
+                                            'data-lng="' + place.position.lng + '"' +  
+                                            'data-address="' + place.address + '"' +
+                                            'data-cat="' + place.category + '"' +  
+                                            'data-src_id="mtup"' +                                                                               
+                                            '>add to favorites</button>'+ 
                         '<p class="evt-description">' + place.description + '</p>' + 
-                        '<button class="fave" data-url="' + place.url + '"' + 
-                                              'data-name="' + place.name + '"' + 
-                                              'data-time="' + place.time + '"' + 
-                                              'data-lat="' + place.position.lat + '"' +
-                                              'data-lng="' + place.position.lng + '"' +  
-                                              'data-address="' + place.address + '"' +
-                                              '>add to favorites</button>' + '<br><br>';    
+                        '<br><br><br>';    
 
     contentString += evtString;
   }
@@ -279,7 +287,7 @@ function reverseGeocode(lat, lng) {
         }
   );
   event_address += address;
-  console.log(address);
+  // console.log(address);
   // return address;
 }
 

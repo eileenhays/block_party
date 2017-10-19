@@ -9,20 +9,18 @@ from flask_debugtoolbar import DebugToolbarExtension
 from sys import argv
 from pprint import pprint, pformat
 
-from model import db, connect_to_db, User, Address, Saved_event
-import os
+from model import db, connect_to_db, User, Address, Saved_event, Category, Source
 from meetup_handler import Meetup_API
+from eventbrite_handler import Eventbrite_API
 from passlib.hash import bcrypt
 
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user 
+import os
 
 
 app = Flask(__name__)
 app.secret_key = "ABC"
 
-MEETUP_API_KEY = os.environ.get('MEETUP_API_KEY')
-EVENTBRITE_TOKEN = os.environ.get('EVENTBRITE_OAUTH_TOKEN')
-EVENTBRITE_URL = "https://www.eventbriteapi.com/v3/"
 
 # Raises an error in Jinja
 app.jinja_env.undefined = StrictUndefined
@@ -57,7 +55,7 @@ def search_for_events():
     session["lng"] = lng
     print session
 
-    raw_data = Meetup_API.find_events(lat, lng, MEETUP_API_KEY)
+    raw_data = Meetup_API.find_events(lat, lng)
     clean_data = Meetup_API.sanitize_data(raw_data)
     # print pprint(clean_data)
 
@@ -106,7 +104,7 @@ def save_user_in_database():
     login_user(new_user)
 
     print "registration was successful and user logged in"
-    flash("registration was successful<br> user logged in")
+    flash("registration was successful and user logged in")
 
     return redirect("/") 
 
@@ -146,12 +144,16 @@ def check_login():
         #     return abort(400)
 
         return redirect(next or url_for('index'))
+
     return render_template('login.html', form=form)
 
 
 @app.route("/logout")
 @login_required
 def logout():
+    """Logs user out of their session"""
+ 
+    # session.clear()
     logout_user()
     print session
     flash("Logout successful!")
@@ -163,25 +165,39 @@ def logout():
 def save_event_in_database():
     """Saves event information in database when user favorites""" 
 
-    evt_name = request.form.get("name")
-    time = request.form.get("time")
+    evt_id = request.form.get("evt_id")
+    datetime = request.form.get("datetime")
+    name = request.form.get("name")
     url = request.form.get("url")
+    group_name = request.form.get("group_name")
     lat = request.form.get("lat")
     lng = request.form.get("lng")
     address = request.form.get("address")
+    category = request.form.get("cat")
+    cat_id = Category.query.filter_by(name=category).first()
+    src_id = request.form.get("src_id")
 
     # add event address 
     new_address = Address(lat=lat, lng=lng, formatted_addy=address)
     db.session.add(new_address)
     db.session.flush()
 
-    new_evt = Saved_event(name=evt_name, datetime=time, url=url, user_id=session['user_id'], addy_id=new_address.addy_id)
+    new_evt = Saved_event(evt_id=evt_id, 
+                          datetime=datetime, 
+                          name=name, 
+                          url=url, 
+                          group_name=group_name, 
+                          user_id=session['user_id'], 
+                          addy_id=new_address.addy_id, 
+                          cat_id=cat_id,
+                          src_id=src_id
+                          )
 
     db.session.add(new_evt)
     db.session.commit() 
 
     print "New event was added to favorites"
-    return evt_name
+    return name
 
 
 @app.route('/favorites')
@@ -192,54 +208,29 @@ def render_favorites_page():
     user_id = current_user.user_id
     saved_events = Saved_event.query.filter_by(user_id=user_id).all()
 
+    print session
+
     return render_template("favorites.html", saved_events=saved_events)
 
 
-@app.route('/eventbrite-events')
-def find_eb_events(lat, lng):
-    """Search for event details on Eventbrite"""
+@app.route('/search-events-eb')
+def find_eb_events():
+    """Search for events in Eventbrite and returns sanitized data"""
 
-    location_lat = lat
-    location_lng = lng
-    distance = 2
-    measurement = 'mi'
-    sort_by = 'date'
+    lat = 37.7893921
+    lng = -122.40775389999999
 
-    if location and distance and measurement:
-        distance = distance + measurement
+    results = Eventbrite_API.find_events(lat, lng)
+    clean_data = Eventbrite_API.sanitize_data(results)
 
-        payload = {'location.latitude': lat,
-                   'location.longitude': lng,
-                   'location.within': distance,
-                   'sort_by': sort_by,
-                   }
+    pprint(results)
 
-        # For GET requests to Eventbrite's API, the token could also be sent as a
-        # URL parameter with the key 'token'
-        headers = {'Authorization': 'Bearer ' + EVENTBRITE_TOKEN}
-
-        response = requests.get(EVENTBRITE_URL + "events/search/",
-                                params=payload,
-                                headers=headers)
-        data = response.json()
-
-        if response.ok:
-            events = data['events']
-        else:
-            flash(":( No parties: " + data['error_description'])
-            events = []
-
-        return render_template("evt_analysis.html",
-                               data=pformat(data),
-                               results=events)
-
-    # If the required info isn't in the request, redirect to the search form
-    else:
-        flash("Please provide all the required information!")
-        return redirect("/afterparty-search")
+    return render_template("evt_analysis.html",
+                           # data=pformat(data),
+                           results=clean_data)
 
 
-
+################## HELPER FUNCTIONS ##################
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
