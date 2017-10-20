@@ -26,6 +26,7 @@ class Eventbrite_API(object):
                    'location.longitude': lng,
                    'location.within': distance,
                    'sort_by': sort_by,
+                   'page': 1
                    }
 
         # For GET requests to Eventbrite's API, the token could also be sent as a

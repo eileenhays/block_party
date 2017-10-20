@@ -55,13 +55,18 @@ def search_for_events():
     session["lng"] = lng
     print session
 
-    # raw_data = Meetup_API.find_events(lat, lng)
-    # clean_data = Meetup_API.sanitize_data(raw_data)
-    results = Eventbrite_API.find_events(lat, lng)
-    clean_data = Eventbrite_API.sanitize_data(results)
+    raw_data = Meetup_API.find_events(lat, lng)
+    clean_data = Meetup_API.sanitize_data(raw_data)
 
-    # print pprint(clean_data)
+    # results = Eventbrite_API.find_events(lat, lng)
+    # limit_results = {}
 
+    # while len(limit_results) <= 10:
+    #     for k, v in results:
+    #         limit_results[k] = v
+
+    # clean_data = Eventbrite_API.sanitize_data(limit_results)
+    # print clean_data
     return jsonify(clean_data)
 
 
@@ -215,20 +220,38 @@ def render_favorites_page():
 
     return render_template("favorites.html", saved_events=saved_events)
 
+# @app.route('/update-homebase')
+# @login_required
+# def update_homebase_address():
+#     """Updates the address connected to the user."""
 
-@app.route('/search-events-eb')
-def find_eb_events():
-    """Search for events in Eventbrite and returns sanitized data"""
+#     curr_user = User.query.filter_by(user_id=current_user.user_id).first()
 
-    lat = 37.7893921
-    lng = -122.40775389999999
+#     address = session["address"] 
+#     lat = session["lat"]
+#     lng = session["lng"]
 
-    results = Eventbrite_API.find_events(lat, lng)
-    clean_data = Eventbrite_API.sanitize_data(results)
+#     new_address = Address(lat=lat, lng=lng, formatted_addy=address)
+#     db.session.add(new_address)
 
-    return render_template("evt_analysis.html",
-                           # data=pformat(data),
-                           results=clean_data)
+#     curr_user.addy_id = new_addy_id
+#     db.commit()
+#     db.session.flush()
+
+
+# @app.route('/search-events-eb')
+# def find_eb_events():
+#     """Search for events in Eventbrite and returns sanitized data"""
+
+#     lat = 37.7893921
+#     lng = -122.40775389999999
+
+#     results = Eventbrite_API.find_events(lat, lng)
+#     clean_data = Eventbrite_API.sanitize_data(results)
+
+#     return render_template("evt_analysis.html",
+#                            # data=pformat(data),
+#                            results=clean_data)
 
 
 ################## HELPER FUNCTIONS ##################

@@ -1,4 +1,4 @@
-"use strict";
+// "use strict";
 
 var map;
 var centerSF = {lat: 37.7749, lng: -122.4194}; 
@@ -121,7 +121,7 @@ function searchWithPrimaryLocation(places) {
 function setEventMarkers(data, map) {
   // Event places data from server
   var eventPlaces = Object.values(data);
-  console.log(eventPlaces); 
+  // console.log(eventPlaces); 
 
   // Exit out of function if no search results
   if (eventPlaces.length == 0) {
@@ -131,7 +131,7 @@ function setEventMarkers(data, map) {
   // Add a marker and info window to each event place
   for (var i = 0; i < eventPlaces.length; i++) {
     var place = eventPlaces[i]; 
-    console.log(place);
+    // console.log(place);
 
     // Skips over the place if position empty
     if (jQuery.isEmptyObject(place.position) || place.position.lat == 0 && place.position.lng == 0) {
@@ -191,7 +191,8 @@ function setEventMarkers(data, map) {
     eventMarker.addListener('click', function(evt) {
       placeInfowindow.setContent(this.infowindow);
       placeInfowindow.open( map, this )
-      // reverseGeocode(place.position.lat, place.position.lng);
+      var address = reverseGeocode(place.position.lat, place.position.lng);
+      console.log('on the event listener' + address);
 
 
       // Show event info on side bar
@@ -211,7 +212,7 @@ function setEventMarkers(data, map) {
           group_name: $(this).attr('data-group'),
           lat: lat,
           lng: lng,
-          address: $(this).attr('data-address'),
+          address: address,
           category: $(this).attr('data-cat'), 
           src_id: $(this).attr('data-src_id'), 
         };
@@ -277,18 +278,19 @@ function listEventsOnPage(eventPlaces) {
 
 function reverseGeocode(lat, lng) {
   var latlng = lat + ',' + lng;
-  var address = '';
-  $.get('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + latlng,
-        function(result) {
+  var address = $.ajax({url: 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + latlng,
+          success: function(result) {
           var formatted_address = result['results'][0]['formatted_address'];
-          
           address += formatted_address;
+          console.log('in here!' + address)
           return formatted_address;
-        }
-  );
-  event_address += address;
-  // console.log(address);
-  // return address;
+          },
+          async: false
+  });
+
+  console.log("This is an address" + address);
+  console.log(address.responseJSON.results[0].formatted_address)
+  return address.responseJSON.results[0].formatted_address;
 }
 
 // function selectedEventInfo(place) {
