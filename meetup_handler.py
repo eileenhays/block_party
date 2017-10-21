@@ -5,7 +5,6 @@ import json
 import os
 
 
-
 class Meetup_API(object):
 
     MEETUP_API_KEY = os.environ.get('MEETUP_API_KEY')
@@ -47,7 +46,7 @@ class Meetup_API(object):
         for event in events_list:
             event_dict = {}
 
-            event_dict['evt_id'] = event['id']
+            event_dict['src_evt_id'] = event['id']
             event_dict['src_id'] = 'mtup'
             event_dict['datetime'] = convert_datetime_from_epoch(event['time']) 
             # event_dict['end_time'] = end_time(event_dict['time'], event['duration']) 
@@ -118,5 +117,5 @@ def end_time(start_time, ms_duration):
 # x.instance_method()
 # MeetupAPI.class_method()
 
-if __name__ == "__main__":
-  Meetup_API.find_categories()
+# if __name__ == "__main__":
+#   Meetup_API.find_categories()

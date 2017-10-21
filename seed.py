@@ -2,7 +2,7 @@
 """Utility file to seed community score database from various sources"""
 
 from sqlalchemy import func
-from model import connect_to_db, db, Address, User, Category, Source #<import classes>
+from model import connect_to_db, db, Address, User, Category, User_saved_event, Source  #<import classes>
 from datetime import datetime
 from server import app
 from json import loads

@@ -2,6 +2,13 @@
 {% block title %}Favorites{% endblock %}
 
 {% block head %}
+
+  <style>
+    .past-events {
+      color: grey;
+    }
+
+  </style>
 {% endblock %}
 
 {% block content %}
@@ -10,21 +17,47 @@
 	  <img src="/static/images/profile_pic.jpg" height=100px>
     <h2>{{ current_user.name }}'s community</h2>
 
-	  Email: {{ current_user.email }}<br>
-	  Saved Address: 
+	  <strong>Email:</strong> {{ current_user.email }}<br>
+	  <strong>Saved Address:</strong> 
     {% if current_user.addy_id %}
       {{ current_user.address.formatted_addy }}
     {% endif %}
 
+
   </div>
 
   <div id="saved-events">
+    <h2>Upcoming events</h2>
     <ul>
-    {% for event in saved_events %}
-      <strong><a href="{{ event.url }}" target="_blank">{{ event.name }}</a></strong>
-      <li>Time: {{ event.datetime }}</li><br>
-    {% endfor %}
+    {% if saved_events is not defined %}
+      {{ error }}
+    {% else %}
+      {% for event in saved_events %}
+        <div id="fave-list">
+          <strong><a href="{{ event.url }}" target="_blank">{{ event.name }}</a></strong><br>
+          Time: {{ event.datetime }}<br>
+          <button type="button" name="remove-button">Remove</button><br>
+        </div>
+      {% endfor %}
+    {% endif %}
   	</ul>
+  </div>
+
+  <div id="past-events">
+    <h2>Past events</h2>
+    <ul>
+    {% if past_events is not defined %}
+      {{ error }}
+    {% else %}
+      {% for event in past_events %}
+        <div id="past-list">
+          <strong><a href="{{ event.url }}" target="_blank">{{ event.name }}</a></strong><br>
+          Time: {{ event.datetime }}<br>
+          <button type="button" name="remove-button">Remove</button><br>
+        </div>
+      {% endfor %}
+    {% endif %}
+    </ul>
   </div>
 
  

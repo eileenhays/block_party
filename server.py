@@ -9,13 +9,15 @@ from flask_debugtoolbar import DebugToolbarExtension
 from sys import argv
 from pprint import pprint, pformat
 
-from model import db, connect_to_db, User, Address, Saved_event, Category, Source
+from model import db, connect_to_db, User, Address, Saved_event, Category, User_saved_event, Source
 from meetup_handler import Meetup_API
 from eventbrite_handler import Eventbrite_API
 from passlib.hash import bcrypt
 
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user 
 import os
+from datetime import datetime
+from sqlalchemy import and_
 
 
 app = Flask(__name__)
@@ -172,36 +174,48 @@ def logout():
 @login_required
 def save_event_in_database():
     """Saves event information in database when user favorites""" 
+    
+    src_evt_id = request.form.get("src_evt_id")
+    # Check if there is an event entry in database already
+    if Saved_event.query.filter_by(src_evt_id='src_evt_id').first() is None:
+        # get all info from event    
+        datetime = request.form.get("datetime")
+        name = request.form.get("name")
+        url = request.form.get("url")
+        group_name = request.form.get("group_name")
+        lat = request.form.get("lat")
+        lng = request.form.get("lng")
+        address = request.form.get("address")
+        category = request.form.get("cat")
+        cat_id = Category.query.filter_by(name=category).first()
+        src_id = request.form.get("src_id")
 
-    evt_id = request.form.get("evt_id")
-    datetime = request.form.get("datetime")
-    name = request.form.get("name")
-    url = request.form.get("url")
-    group_name = request.form.get("group_name")
-    lat = request.form.get("lat")
-    lng = request.form.get("lng")
-    address = request.form.get("address")
-    category = request.form.get("cat")
-    cat_id = Category.query.filter_by(name=category).first()
-    src_id = request.form.get("src_id")
+        # add event address 
+        new_address = Address(lat=lat, lng=lng, formatted_addy=address)
+        db.session.add(new_address)
+        db.session.flush()
 
-    # add event address 
-    new_address = Address(lat=lat, lng=lng, formatted_addy=address)
-    db.session.add(new_address)
-    db.session.flush()
+        #add event info 
+        new_evt = Saved_event(src_evt_id=src_evt_id, 
+                              datetime=datetime, 
+                              name=name, 
+                              url=url, 
+                              group_name=group_name, 
+                              addy_id=new_address.addy_id, 
+                              cat_id=cat_id,
+                              src_id=src_id,
+                              )
 
-    new_evt = Saved_event(evt_id=evt_id, 
-                          datetime=datetime, 
-                          name=name, 
-                          url=url, 
-                          group_name=group_name, 
-                          user_id=session['user_id'], 
-                          addy_id=new_address.addy_id, 
-                          cat_id=cat_id,
-                          src_id=src_id
-                          )
+        db.session.add(new_evt)
+        db.session.flush()
+        evt_id = new_evt.evt_id
+    else:
+        event = Saved_event.query.filter_by(src_evt_id=src_evt_id).first()
+        evt_id = event.event.evt_id 
+ 
+    new_user_saved_event = User_saved_event(user_id=current_user.user_id, evt_id=evt_id)
+    db.session.add(new_user_saved_event)
 
-    db.session.add(new_evt)
     db.session.commit() 
 
     print "New event was added to favorites"
@@ -214,11 +228,29 @@ def render_favorites_page():
     """Shows user's favorites""" 
 
     user_id = current_user.user_id
-    saved_events = Saved_event.query.filter_by(user_id=user_id).all()
+    user_saved_events = User_saved_event.query.filter_by(user_id=user_id).all()
+    
+    saved_events = []
+    past_events = []
 
-    print session
+    for user_evt in user_saved_events:
+        evt_id = user_evt.event.evt_id
+        saved_event = Saved_event.query.filter(Saved_event.evt_id==evt_id).first()
+        
+        if saved_event.datetime >=datetime.today():
+            saved_events.append(saved_event)
+        else: 
+            past_events.append(saved_event)
 
-    return render_template("favorites.html", saved_events=saved_events)
+        # if saved_event != None:
+        #     saved_events.append(saved_event)
+
+        # print "Saved_evt", saved_event.name
+
+    return render_template("favorites.html", 
+                           saved_events=saved_events, 
+                           past_events=past_events, 
+                           error="You currently have no favorites")
 
 # @app.route('/update-homebase')
 # @login_required
@@ -254,7 +286,6 @@ def render_favorites_page():
 #                            results=clean_data)
 
 
-################## HELPER FUNCTIONS ##################
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the

@@ -101,7 +101,7 @@ class Eventbrite_API(object):
             event_dict = {}
 
             if 'status' != 'canceled' or 'completed':
-                event_dict['evt_id'] = event['id']
+                event_dict['src_evt_id'] = event['id']
                 event_dict['src_id'] = 'evtb'
                 event_dict['datetime'] = event['start']['local']  #sync up everywhere
                 # event_dict['end_time']  = event['end']['local']  

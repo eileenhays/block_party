@@ -11,9 +11,11 @@
 
   <div id="status-bar">
     <p>Homebase Address:     
-      {% if current_user.addy_id %}
-        {{ current_user.address.formatted_addy }}
-      {% endif %} 
+      {% if current_user %}
+        {% if current_user.addy_id %}
+          {{ current_user.address.formatted_addy }}
+        {% endif %} 
+      {% endif %}
     </p>
     <button id="update_home">Update Homebase</button><br><br>
   </div>

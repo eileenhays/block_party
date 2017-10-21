@@ -84,18 +84,15 @@ class Saved_event(db.Model):
 
     __tablename__ = 'saved_events'
 
-    evt_id = db.Column(db.String(25), primary_key=True)
+    evt_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    src_evt_id = db.Column(db.String(25), unique=True, nullable=False)
     datetime = db.Column(db.DateTime, nullable=False)
     name = db.Column(db.String(150), nullable=False)
     group_name = db.Column(db.String(150), nullable=False)
     url = db.Column(db.String(500), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     addy_id = db.Column(db.Integer, db.ForeignKey('addresses.addy_id'), nullable=False)
     cat_id = db.Column(db.Integer, db.ForeignKey('categories.cat_id'), nullable=True)    
     src_id = db.Column(db.String(4), db.ForeignKey('sources.src_id'), nullable=False) 
-
-    user = db.relationship("User", backref=db.backref("saved_events", 
-                                                      order_by=datetime))
 
     address = db.relationship("Address", backref=db.backref("saved_events", 
                                                             order_by=datetime))
@@ -110,6 +107,29 @@ class Saved_event(db.Model):
         """Prints event object in a more helpful way"""
 
         return "<Saved_events: evt_id=%s name=%s>" % (self.evt_id, self.name)  
+
+
+class User_saved_event(db.Model):
+    """Association table between Users and Saved_events"""
+
+    __tablename__ = 'user_saved_events'
+
+    user_evt_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    evt_id = db.Column(db.Integer, db.ForeignKey('saved_events.evt_id'), nullable=False)
+
+    user = db.relationship("User", backref=db.backref("user_saved_events", 
+                                                      order_by=user_evt_id))
+
+    event = db.relationship("Saved_event", backref=db.backref("user_saved_events",
+                                                              order_by=user_evt_id))
+
+    def __repr__(self):
+        """Prints user_event object in a more helpful way"""
+
+        return "<User_saved_events: user_evt_id=%s user_id=%s evt_id=%s>" % (self.user_evt_id, 
+                                                                             self.user_id, 
+                                                                             self.evt_id) 
 
 
 class Source(db.Model):

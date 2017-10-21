@@ -1,4 +1,4 @@
-// "use strict";
+"use strict";
 
 var map;
 var centerSF = {lat: 37.7749, lng: -122.4194}; 
@@ -131,7 +131,7 @@ function setEventMarkers(data, map) {
   // Add a marker and info window to each event place
   for (var i = 0; i < eventPlaces.length; i++) {
     var place = eventPlaces[i]; 
-    // console.log(place);
+    console.log("Place:" + place);
 
     // Skips over the place if position empty
     if (jQuery.isEmptyObject(place.position) || place.position.lat == 0 && place.position.lng == 0) {
@@ -148,7 +148,7 @@ function setEventMarkers(data, map) {
                       '<strong>Group: </strong>' + place.group + '<br>' +
                       '<p><strong>' + place.datetime + '</strong></p>' + 
                       '<p>' + shortEventDescript + '...</p>' + 
-                      '<button class="fave" data-evt_id="' + place.evt_id + '"' +
+                      '<button class="fave" data-src_evt_id="' + place.src_evt_id + '"' +
                                             'data-datetime="' + place.datetime + '"' +
                                             'data-name="' + place.name + '"' + 
                                             'data-url="' + place.url + '"' + 
@@ -162,7 +162,7 @@ function setEventMarkers(data, map) {
                       '</div>';    
     // console.log(contentString);
     }
-
+    // src_evt_id
     // Instantiates info window for place
     var placeInfowindow = new google.maps.InfoWindow({
       maxWidth: 200
@@ -192,12 +192,6 @@ function setEventMarkers(data, map) {
       placeInfowindow.setContent(this.infowindow);
       placeInfowindow.open( map, this )
       var address = reverseGeocode(place.position.lat, place.position.lng);
-      console.log('on the event listener' + address);
-
-
-      // Show event info on side bar
-
-
       // Saves the event details to variables when favorite button clicked
       $('.fave').click(function(evt){
         evt.preventDefault();
@@ -205,7 +199,7 @@ function setEventMarkers(data, map) {
         var lat = $(this).attr('data-lat');
         var lng = $(this).attr('data-lng');
         var eventInfo = {
-          evt_id: $(this).attr('data-evt_id'),
+          src_evt_id: $(this).attr('data-src_evt_id'),
           datetime: $(this).attr('data-datetime'),
           name: $(this).attr('data-name'),
           url: $(this).attr('data-url'),
@@ -216,7 +210,6 @@ function setEventMarkers(data, map) {
           category: $(this).attr('data-cat'), 
           src_id: $(this).attr('data-src_id'), 
         };
-        console.log(eventInfo);
 
         // AJAX call to server to search local events with provided address
         $.post("/add-fave", eventInfo)
@@ -256,7 +249,7 @@ function listEventsOnPage(eventPlaces) {
     var evtString = '<h3><a href="' + place.url + '" target="_blank">' + place.name + '</a></h3>' +
                         '<strong>Group: </strong>' + place.group + '<br>' +
                         '<strong>' + place.datetime + '</strong><br>' + 
-                        '<button class="fave" data-evt_id="' + place.evt_id + '"' +
+                        '<button class="fave" data-src_evt_id="' + place.src_evt_id + '"' +
                                             'data-datetime="' + place.datetime + '"' +
                                             'data-name="' + place.name + '"' + 
                                             'data-url="' + place.url + '"' + 
@@ -288,8 +281,8 @@ function reverseGeocode(lat, lng) {
           async: false
   });
 
-  console.log("This is an address" + address);
-  console.log(address.responseJSON.results[0].formatted_address)
+  // console.log("This is an address" + address);
+  // console.log(address.responseJSON.results[0].formatted_address)
   return address.responseJSON.results[0].formatted_address;
 }
 
