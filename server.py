@@ -269,6 +269,53 @@ def remove_event_from_faves():
     return remove_evt.name
 
 
+@app.route('/update-homebase', methods=["POST"])
+@login_required
+def update_homebase_address():
+    """Updates the home address for the user to current session"""
+
+    address = session["address"] 
+    lat = session["lat"]
+    lng = session["lng"]
+
+    new_address = Address(lat=lat, lng=lng, formatted_addy=address)
+    db.session.add(new_address)
+    db.session.flush()
+
+    #change address for the user
+    curr_user = User.query.filter_by(user_id=current_user.user_id).first()
+    curr_user.addy_id = new_address.addy_id
+    db.session.commit()
+
+    return new_address.formatted_addy
+
+
+@app.route('/homebase-in-session')
+@login_required
+def autoload_homebase():
+    """Autoloads homebase address"""
+
+    curr_user = User.query.filter_by(user_id=current_user.user_id).first()
+    homebase_obj = Address.query.filter_by(addy_id=curr_user.addy_id).first()
+
+    return homebase_obj
+
+
+# @app.route('/search-events-eb')
+# def find_eb_events():
+#     """Search for events in Eventbrite and returns sanitized data"""
+
+#     lat = 37.7893921
+#     lng = -122.40775389999999
+
+#     results = Eventbrite_API.find_events(lat, lng)
+#     clean_data = Eventbrite_API.sanitize_data(results)
+
+#     return render_template("evt_analysis.html",
+#                            # data=pformat(data),
+#                            results=clean_data)
+
+
 # @app.route('/date-sort', methods=["POST"])
 # @login_required
 # def sort_events_by_date():
@@ -288,40 +335,6 @@ def remove_event_from_faves():
 #             saved_events.append(saved_event)
 #         else: 
 #             past_events.append(saved_event)
-
-
-@app.route('/update-homebase')
-@login_required
-def update_homebase_address():
-    """Updates the address connected to the user."""
-
-    curr_user = User.query.filter_by(user_id=current_user.user_id).first()
-
-    address = session["address"] 
-    lat = session["lat"]
-    lng = session["lng"]
-
-    new_address = Address(lat=lat, lng=lng, formatted_addy=address)
-    db.session.add(new_address)
-
-    curr_user.addy_id = new_addy_id
-    db.commit()
-    db.session.flush()
-
-
-# @app.route('/search-events-eb')
-# def find_eb_events():
-#     """Search for events in Eventbrite and returns sanitized data"""
-
-#     lat = 37.7893921
-#     lng = -122.40775389999999
-
-#     results = Eventbrite_API.find_events(lat, lng)
-#     clean_data = Eventbrite_API.sanitize_data(results)
-
-#     return render_template("evt_analysis.html",
-#                            # data=pformat(data),
-#                            results=clean_data)
 
 
 

@@ -9,15 +9,17 @@
 
 {% block content %}
 
-  <div id="status-bar">
-    <p>Homebase Address:     
-      {% if current_user %}
+  <div class="status-bar">
+    <p><strong>Homebase Address:</strong>  
+      <div id="homebase-addy"> 
+      {% if current_user.is_authenticated %}
         {% if current_user.addy_id %}
           {{ current_user.address.formatted_addy }}
         {% endif %} 
+        <button id="update_home">Update Homebase</button><br><br>
       {% endif %}
+      </div>
     </p>
-    <button id="update_home">Update Homebase</button><br><br>
   </div>
   
   <input id="pac-input" class="controls" type="text" placeholder="Enter address" name="search-location">

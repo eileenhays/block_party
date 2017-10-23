@@ -14,11 +14,17 @@ function initAutocomplete() {
     mapTypeId: 'roadmap'
   });
 
-  // Create search box and link it to the UI element.
+  // if user is logged in {
+  //   var input = asdf;
+  // } 
+  // else {
+  //   input = document.getElementById('pac-input');
+  // }
   var input = document.getElementById('pac-input');
-  
+
+  // Create search box and link it to the UI element.
   var searchBox = new google.maps.places.SearchBox(input);
-  
+ 
   map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
   // Bias the SearchBox results towards current map's viewport.
@@ -27,7 +33,11 @@ function initAutocomplete() {
   });
 
   // Setup primary marker and searches for events with markers
-  setPrimaryMarker(map, searchBox, markers);  
+  setPrimaryMarker(map, searchBox, markers); 
+
+  // Sets evt listener on "Update Homebase" button to change 
+  // to latest search
+  updateHomebase();
 }
 
 function setPrimaryMarker(map, searchBox, markers) {
@@ -286,11 +296,20 @@ function reverseGeocode(lat, lng) {
   return address.responseJSON.results[0].formatted_address;
 }
 
-// function selectedEventInfo(place) {
-//   var eventInfo = document.getElementById('selected_event');
+function updateHomebase() {
+  // Updates the user's home address to current session
+  $('#update_home').click(function(evt){    
 
-//   eventInfo.innerHTML = <h2>place.name</h2>
-// }
+    $.get("/update-homebase", function(new_addy) {
+      $("#homebase-addy").html(new_addy);
+    });
+  });
+}
+
+function homebaseInSession() {
+  // Maintains the homebase address while user is logged in
+
+}
 
 
 
