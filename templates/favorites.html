@@ -2,13 +2,7 @@
 {% block title %}Favorites{% endblock %}
 
 {% block head %}
-
-  <style>
-    .past-events {
-      color: grey;
-    }
-
-  </style>
+  <link rel="stylesheet" href="/static/css/favorites.css">
 {% endblock %}
 
 {% block content %}
@@ -26,6 +20,8 @@
 
   </div>
 
+  <button class="date-sort" name="date-sort">Sort events by date</button>
+
   <div id="saved-events">
     <h2>Upcoming events</h2>
     <ul>
@@ -33,10 +29,10 @@
       {{ error }}
     {% else %}
       {% for event in saved_events %}
-        <div id="fave-list">
+        <div class="evt-lists" id="evt-{{ event.evt_id }}">
           <strong><a href="{{ event.url }}" target="_blank">{{ event.name }}</a></strong><br>
           Time: {{ event.datetime }}<br>
-          <button type="button" name="remove-button">Remove</button><br>
+          <button class="remove" name="remove-button" data-evt_id="{{ event.evt_id }}">Remove</button><br><br>
         </div>
       {% endfor %}
     {% endif %}
@@ -50,10 +46,10 @@
       {{ error }}
     {% else %}
       {% for event in past_events %}
-        <div id="past-list">
+        <div class="evt-lists" id="evt-{{ event.evt_id }}">
           <strong><a href="{{ event.url }}" target="_blank">{{ event.name }}</a></strong><br>
           Time: {{ event.datetime }}<br>
-          <button type="button" name="remove-button">Remove</button><br>
+          <button class="remove" name="remove-button" data-evt_id="{{ event.evt_id }}">Remove</button><br><br>
         </div>
       {% endfor %}
     {% endif %}
@@ -61,4 +57,11 @@
   </div>
 
  
+{% endblock %}
+
+{% block page_js %}
+  <script src="http://code.jquery.com/jquery.js"></script>
+
+  <script src="/static/js/faves.js"></script>
+
 {% endblock %}

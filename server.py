@@ -242,33 +242,71 @@ def render_favorites_page():
         else: 
             past_events.append(saved_event)
 
-        # if saved_event != None:
-        #     saved_events.append(saved_event)
-
-        # print "Saved_evt", saved_event.name
-
     return render_template("favorites.html", 
                            saved_events=saved_events, 
                            past_events=past_events, 
                            error="You currently have no favorites")
 
-# @app.route('/update-homebase')
+
+@app.route('/remove-event', methods=["POST"])
+@login_required
+def remove_event_from_faves():
+    """Deletes user_evt entry from database when user clicks remove"""
+
+    user_id = current_user.user_id 
+    evt_id = request.form.get("evt_id") 
+
+    user_evt = User_saved_event.query.filter(and_(User_saved_event.user_id == user_id,
+                                                  User_saved_event.evt_id == evt_id)).first()
+
+    db.session.delete(user_evt)
+    db.session.commit()
+
+    print "Event was removed from %s's favorites" % (current_user.name)
+
+    remove_evt = Saved_event.query.filter(Saved_event.evt_id==evt_id).first() 
+
+    return remove_evt.name
+
+
+# @app.route('/date-sort', methods=["POST"])
 # @login_required
-# def update_homebase_address():
-#     """Updates the address connected to the user."""
+# def sort_events_by_date():
+#     """Sorts the favorite events by date from earliest to latest"""
 
-#     curr_user = User.query.filter_by(user_id=current_user.user_id).first()
+#     user_id = current_user.user_id
+#     user_saved_events = User_saved_event.query.filter_by(user_id=user_id).all()
+    
+#     saved_events = []
+#     past_events = []
 
-#     address = session["address"] 
-#     lat = session["lat"]
-#     lng = session["lng"]
+#     for user_evt in user_saved_events:
+#         evt_id = user_evt.event.evt_id
+#         saved_event = Saved_event.query.filter(Saved_event.evt_id==evt_id).first()
+        
+#         if saved_event.datetime >=datetime.today():
+#             saved_events.append(saved_event)
+#         else: 
+#             past_events.append(saved_event)
 
-#     new_address = Address(lat=lat, lng=lng, formatted_addy=address)
-#     db.session.add(new_address)
 
-#     curr_user.addy_id = new_addy_id
-#     db.commit()
-#     db.session.flush()
+@app.route('/update-homebase')
+@login_required
+def update_homebase_address():
+    """Updates the address connected to the user."""
+
+    curr_user = User.query.filter_by(user_id=current_user.user_id).first()
+
+    address = session["address"] 
+    lat = session["lat"]
+    lng = session["lng"]
+
+    new_address = Address(lat=lat, lng=lng, formatted_addy=address)
+    db.session.add(new_address)
+
+    curr_user.addy_id = new_addy_id
+    db.commit()
+    db.session.flush()
 
 
 # @app.route('/search-events-eb')
