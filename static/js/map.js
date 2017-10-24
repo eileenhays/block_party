@@ -14,12 +14,6 @@ function initAutocomplete() {
     mapTypeId: 'roadmap'
   });
 
-  // if user is logged in {
-  //   var input = asdf;
-  // } 
-  // else {
-  //   input = document.getElementById('pac-input');
-  // }
   var input = document.getElementById('pac-input');
 
   // Create search box and link it to the UI element.
@@ -38,6 +32,15 @@ function initAutocomplete() {
   // Sets evt listener on "Update Homebase" button to change 
   // to latest search
   updateHomebase();
+
+  // Checks if there is address already in session to autoload
+  $.get("/homebase-in-session")
+      .done(function(address) {
+            console.log("returned_address " + address);
+            if (address !== "False") {
+              input.value = address;
+            }
+      });
 }
 
 function setPrimaryMarker(map, searchBox, markers) {
@@ -158,7 +161,7 @@ function setEventMarkers(data, map) {
                       '<strong>Group: </strong>' + place.group + '<br>' +
                       '<p><strong>' + place.datetime + '</strong></p>' + 
                       '<p>' + shortEventDescript + '...</p>' + 
-                      '<button class="fave" data-src_evt_id="' + place.src_evt_id + '"' +
+                      '<button class="fave btn btn-default" data-src_evt_id="' + place.src_evt_id + '"' +
                                             'data-datetime="' + place.datetime + '"' +
                                             'data-name="' + place.name + '"' + 
                                             'data-url="' + place.url + '"' + 
@@ -250,16 +253,17 @@ function clearOldMarkers(markers) {
 
 function listEventsOnPage(eventPlaces) {
   // Full list of events on the bottom of the map
-  var eventList = document.getElementById('events_list');
+  var eventList = document.getElementById('evt-list');
+  console.log("events!" + eventList);
   var contentString = '';
   
   for (var i = 0; i < eventPlaces.length; i++) {
     var place = eventPlaces[i]; 
     // console.log(place);
-    var evtString = '<h3><a href="' + place.url + '" target="_blank">' + place.name + '</a></h3>' +
+    var evtString = '<h4><a href="' + place.url + '" target="_blank">' + place.name + '</a></h4>' +
                         '<strong>Group: </strong>' + place.group + '<br>' +
                         '<strong>' + place.datetime + '</strong><br>' + 
-                        '<button class="fave" data-src_evt_id="' + place.src_evt_id + '"' +
+                        '<button class="fave btn btn-default" data-src_evt_id="' + place.src_evt_id + '"' +
                                             'data-datetime="' + place.datetime + '"' +
                                             'data-name="' + place.name + '"' + 
                                             'data-url="' + place.url + '"' + 
@@ -269,9 +273,8 @@ function listEventsOnPage(eventPlaces) {
                                             'data-address="' + place.address + '"' +
                                             'data-cat="' + place.category + '"' +  
                                             'data-src_id="mtup"' +                                                                               
-                                            '>add to favorites</button>'+ 
-                        '<p class="evt-description">' + place.description + '</p>' + 
-                        '<br><br><br>';    
+                                            '>add to favorites</button><br>'+ 
+                        '<p class="evt-description">' + place.description + '</p><br>';
 
     contentString += evtString;
   }
@@ -298,18 +301,15 @@ function reverseGeocode(lat, lng) {
 
 function updateHomebase() {
   // Updates the user's home address to current session
-  $('#update_home').click(function(evt){    
+  $('#update-home').click(function(evt){    
 
-    $.get("/update-homebase", function(new_addy) {
+    $.post("/update-homebase", function(new_addy) {
       $("#homebase-addy").html(new_addy);
     });
   });
 }
 
-function homebaseInSession() {
-  // Maintains the homebase address while user is logged in
 
-}
 
 
 

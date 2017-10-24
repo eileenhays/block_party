@@ -1,14 +1,97 @@
-.right-header-links {
-	text-align: right;
-}	
+body {
+	font-family: 'Raleway', sans-serif;
+	background-color: #EEF0F4;
+}
 
-.evt-description {
-	display: inline-block; 
-	font-size: 10pt;
-	font-family: Georgia, Serif;
+h1, h2, h3, h4, h5, h6 {
+	font-family: 'Nunito', sans-serif;
+	color: #1e3888;
+}
+
+p {
+	font-family: 'Raleway', sans-serif;
+	color: #1e3888;
+}
+
+a {
+	color: #FF7346;
+}
+
+a:hover,
+a:focus {
+	color: #FF7346;
+}
+
+.navbar {
+	background-color: rgba(161, 232, 209, 1);
+}
+
+.navbar-brand {
+/*	font-family: 'Archivo Black', sans-serif;
+*/	font-size: xx-large;
+	font-family: 'Nunito', sans-serif;
+	font-weight: bold;
+    padding: 0px 15px 0px 10px;
+	height: 1em;
+	color: #92A5B2;
+}
+
+.nav, .navbar-default, .navbar-nav {
+	font-family: 'Nunito', sans-serif;
+	font-size: large;
+	border: 0px;
+}
+
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+	background: none;
+	color: #014559;
+}
+
+.navbar > .container-fluid .navbar-brand {
+    padding-top: 18px;
+}
+
+.btn-body {
+	background-color: rgba(161, 232, 209, 1.0);
+}
+
+.logo-header {
+    height: 2em;
+    margin-top: 8px;
+}
+
+.color-logo {
+	height: 2em;
+	vertical-align: center;
+}
+
+.form {
+	align-content: center;
+}
+
+.glyphicon-star {
+	vertical-align: top;
+}
+
+#welcome, #flash-msg {
+	text-align: right; 
+	font-family: 'Raleway', sans-serif;
 }
 
 #logo {
-	font-size: 1em;
+	font-family: 'Nunito', sans-serif;
 }
+
+#footer-img {
+	height: 250px;
+	display: block;
+    margin: auto;
+}
+
+#footer-msg {
+	text-align: center;
+	display: block;
+	color: #FF7246;
+}
+
 

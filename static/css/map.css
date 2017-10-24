@@ -1,20 +1,29 @@
 .evt-description {
-  display: inline-block; 
   font-size: 10pt;
-  font-family: Georgia, Serif;
+  font-family: 'Raleway', sans-serif;
 }
 
 #map {
- height: 600px;
- width: 600px;
- background-color: lavender;
+  height: 500px;
+  width: 650px;
+  background-color: #A1E8D1;
+  margin: 0px;
+  padding-top: 0px;
+  padding-left: 0px;
+}
+
+#welcome {
+  font-size: 12pt;
+  padding-top: 15px;
+  padding-right: 10px;
+  color: "white";
 }
 
 /* Optional: Makes the sample page fill the window. */
 html, body {
   height: 100%;
-  margin: 0;
-  padding: 0;
+  margin: 0px;
+  padding: 0px;
 }
 
 /* Every thing below is for the autocomplete search box */
@@ -50,6 +59,10 @@ html, body {
 #pac-container {
   padding-bottom: 12px;
   margin-right: 12px;
+}
+
+.comm-evts {
+  margin-left: 200px;
 }
 
 .pac-controls {
@@ -88,5 +101,9 @@ html, body {
 
 #target {
   width: 345px;
+}
+
+#instructions {
+  color: #ff7346;
 }
 

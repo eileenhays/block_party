@@ -72,14 +72,22 @@ def search_for_events():
     return jsonify(clean_data)
 
 
-@app.route('/registration')
+@app.route('/about')
+@login_required
+def render_about_page():
+    """Shows about page""" 
+
+    return render_template("about.html")
+
+
+@app.route('/registration', methods=['GET'])
 def render_registration_page():
     """Shows registration page"""
 
     return render_template("registration.html")
 
 
-@app.route('/handle-regis', methods=['POST'])
+@app.route('/registration', methods=['POST'])
 def save_user_in_database():
     """Register new user and save info in database"""
 
@@ -125,14 +133,14 @@ def load_user(user_id):
     return User.query.get(user_id)
 
 
-@app.route('/login')
+@app.route('/login', methods=['GET'])
 def render_login_page():
     """Shows the registration and login page. Gives user access to profile."""
 
     return render_template("login.html")
 
 
-@app.route('/handle-login', methods=['POST'])
+@app.route('/login', methods=['POST'])
 def check_login():
     """Verify login credentials"""
 
@@ -144,8 +152,9 @@ def check_login():
         # Login and validate the user.
         # user should be an instance of your `User` class
         login_user(user)
+        session['Logged_in'] = True
 
-        flash('Logged in successfully.')
+        flash('Login was successful')
 
         next = request.args.get('next')
         # is_safe_url should check if the url is safe for redirects.
@@ -165,6 +174,7 @@ def logout():
  
     # session.clear()
     logout_user()
+    session['Logged_in'] = False
     print session
     flash("Logout successful!")
     return redirect('/')
@@ -291,29 +301,30 @@ def update_homebase_address():
 
 
 @app.route('/homebase-in-session')
-@login_required
 def autoload_homebase():
-    """Autoloads homebase address"""
+    """Returns homebase address to autopopulate"""
 
-    curr_user = User.query.filter_by(user_id=current_user.user_id).first()
-    homebase_obj = Address.query.filter_by(addy_id=curr_user.addy_id).first()
+    if session['Logged_in'] == True:
+        curr_user = User.query.filter_by(user_id=current_user.user_id).first()
+        homebase_obj = Address.query.filter_by(addy_id=curr_user.addy_id).first()
+        return homebase_obj.formatted_addy
+    else:
+        return "False"
 
-    return homebase_obj
 
+@app.route('/search-events-eb')
+def find_eb_events():
+    """Search for events in Eventbrite and returns sanitized data"""
 
-# @app.route('/search-events-eb')
-# def find_eb_events():
-#     """Search for events in Eventbrite and returns sanitized data"""
+    lat = 37.7893921
+    lng = -122.40775389999999
 
-#     lat = 37.7893921
-#     lng = -122.40775389999999
+    results = Eventbrite_API.find_events(lat, lng)
+    clean_data = Eventbrite_API.sanitize_data(results)
 
-#     results = Eventbrite_API.find_events(lat, lng)
-#     clean_data = Eventbrite_API.sanitize_data(results)
-
-#     return render_template("evt_analysis.html",
-#                            # data=pformat(data),
-#                            results=clean_data)
+    return render_template("evt_analysis.html",
+                           # data=pformat(data),
+                           results=clean_data)
 
 
 # @app.route('/date-sort', methods=["POST"])

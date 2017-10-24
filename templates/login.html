@@ -6,14 +6,22 @@
 {% endblock %}
 
 {% block content %}
-
-    <form action="handle-login" method="POST" id="login">
+<div class="container-fluid">
+<div class="form col-xs-12">
+    <form action="login" method="POST" id="login">
       <div class="form">
-        <label><h2>login to an existing account</h2></label><br>
-        <input type="text" name="email" placeholder="email" required></input><br>
-        <input type="password" name="password" placeholder="password" required></input><br>
-        <input type="submit" value="login"></input><br>
+       <span><img src="static/images/blockparty_logo_color.png" class="color-logo"></span> 
+        <label><h2>Login to an existing account</h2></label><br>
+        
+        <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> <input type="text" name="email" placeholder="email" required></input><br>
+        
+        <span class="glyphicon glyphicon-lock" aria-hidden="true"></span> <input type="password" name="password" placeholder="password" required></input><br><br>
+        
+        <button class="btn btn-default btn-body" type="submit" value="Login">Login</button><br><br>
       </div>
     </form>
- 
+
+    <p>Don’t have an account? <strong><a href="/registration">Sign up</a></strong></p>
+</div>
+</div>
 {% endblock %}

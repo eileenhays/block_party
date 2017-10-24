@@ -1,38 +1,94 @@
 <!doctype html>
 <html>
 <head>
-    <title>{% block title %}TITLE GOES HERE{% endblock %}</title>
-    <link rel="stylesheet" href="/static/css/style.css">
-    {% with messages = get_flashed_messages() %}
-    	{% if messages %}
-    		<ul class=flashes>
-    			{% for message in messages %}
-    			 {{ message }}
-    			{% endfor %}
-    		</ul>
-    	{% endif %}
-    {% endwith %}
 
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{% block title %}TITLE GOES HERE{% endblock %}</title>
+    <link href="http://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/united/bootstrap.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Archivo+Black" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" href="static/images/blockparty_logo_color.png">
     {% block head %}{% endblock %}
 </head>
 
 <body>
-    <div class="header-nav-bar">
-        <a href="/"><img src="/static/images/blocks.svg" id="logo"> blockparty</a>
-        <a href="/favorites">favorites</a>
+<!--     Navbar -->
+    <nav class="navbar navbar-default navbar-static">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" 
+                  class="navbar-toggle collapsed" 
+                  data-toggle="collapse" 
+                  data-target="#bs-example-navbar-collapse-1" 
+                  aria-expanded="false"
+                  aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <img class="logo-header" alt="BlockParty" src="/static/images/blockparty_logo_color.png">
+          <a class="navbar-brand" href="/">BlockParty</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="/about">About</a></li>
+            <li><a href="/favorites"><span class="glyphicon glyphicon-star" aria-hidden="true"></span>Favorites</a></li>
+          </ul>
+        
+          <ul class="nav navbar-nav navbar-right">
+            <li>
+                <!-- <span id="welcome"> -->
+                <p class="navbar-text">
+    
+                {% if current_user.is_authenticated %}
+                    Welcome back {{ current_user.name }}!  
+                {% endif %}</p><!-- 
+                </span> -->
+            </li>
+            <li><button type="button" class="btn btn-default navbar-btn" id="login">Login</button></li>
+          </ul>
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav>
+
+<!--     Status bar and homebase address -->
+    <div class="container-fluid">
+    <div class="row">
+        <div class="status-bar col-xs-6 col-md-6 col-lg-4"> 
+            <div id="flash-msg">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul class=flashes>
+                        {% for message in messages %}
+                         {{ message }}
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+            </div>
+        </div>
+    </div>
     </div>
 
-	<div class="right-header-links"> 
-        {% if current_user.is_authenticated %}
-            Hey, {{ current_user.name }}!<br>
-        {% endif %}
-        save your events? <a href="/registration">register</a><br>
-        <a href="/login">login</a><br>
-        <a href="/logout">logout</a>
-	</div>
-
     {% block content %} put you content here {% endblock %}
-    {% block page_js %}{% endblock %}
+
+    <div class="container-footer">
+        <div>
+            <img id="footer-img" src="static/images/city-blocks.png" align="center"><br> 
+            <span id="footer-msg">© Made with love by Eileen Hays-Schwantes, 2017<span>
+        </div>
+    </div>
+
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/
+      3.3.7/js/bootstrap.js"></script>
+    <script src="static/js/user-manage.js"></script>
+
+    {% block page_js %}
+    {% endblock %}    
 
 
 </body>
