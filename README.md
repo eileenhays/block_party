@@ -1,7 +1,9 @@
 BlockParty: community event locator 
+
 Conceived and built by Eileen Hays-Schwantes
 
 Description:
+
 BlockParty is a web app that provides users a way to buildup the community around them. 
 It's for people who want to engage with neighbors that share similar interests, such as 
 hiking, playing boardgames, discussing books, and coding. By entering their "homebase," 
@@ -11,9 +13,11 @@ can be easily viewed geographically on a Google map or by date on a list. Users 
 to save and view their favorite events, which is updated when events expire.
 
 Tech Stack: 
+
 PostgreSQL, SQLAlchemy, Python, Flask, Jinja, passlib, flask-login, Javascript, JQuery, 
 HTML5, CSS3, Bootstrap
 
 APIs Used: 
+
 Google Maps Javascript, Meetup, and Eventbrite APIs
 
