@@ -94,4 +94,11 @@ a:focus {
 	color: #FF7246;
 }
 
+#user-img {
+	height: 10em;
+}
+
+#profile-img {
+	height: 175px;
+}
 

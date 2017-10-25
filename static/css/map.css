@@ -4,8 +4,8 @@
 }
 
 #map {
-  height: 500px;
-  width: 650px;
+  height: 600px;
+  width: 800px;
   background-color: #A1E8D1;
   margin: 0px;
   padding-top: 0px;
@@ -62,7 +62,8 @@ html, body {
 }
 
 .comm-evts {
-  margin-left: 200px;
+  margin-left: 50px;
+  margin-bottom: 150px;
 }
 
 .pac-controls {

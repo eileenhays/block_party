@@ -120,6 +120,7 @@ def save_user_in_database():
     db.session.commit() 
 
     login_user(new_user)
+    session['Logged_in'] = True
 
     print "registration was successful and user logged in"
     flash("registration was successful and user logged in")
@@ -213,7 +214,7 @@ def save_event_in_database():
                               group_name=group_name, 
                               addy_id=new_address.addy_id, 
                               cat_id=cat_id,
-                              src_id=src_id,
+                              src_id=src_id
                               )
 
         db.session.add(new_evt)

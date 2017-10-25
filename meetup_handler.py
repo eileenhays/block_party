@@ -17,7 +17,7 @@ class Meetup_API(object):
         #Search parameters
         search_radius = 2 #default distance in mile(s) from location
         search_time = ',2w' #upcoming 2 weeks
-        num_of_results = 20
+        num_of_results = 30
 
         payload = {'key': cls.MEETUP_API_KEY, 
                    'time': search_time, 

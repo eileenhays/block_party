@@ -74,7 +74,7 @@ function setPrimaryMarker(map, searchBox, markers) {
       }
 
       var primaryIcon = {
-        url: "/static/images/star.svg",
+        url: "/static/images/turqoise_marker.svg",
         size: new google.maps.Size(71, 71), 
         origin: new google.maps.Point(0, 0),
         anchor: new google.maps.Point(17, 34), 
@@ -134,7 +134,7 @@ function searchWithPrimaryLocation(places) {
 function setEventMarkers(data, map) {
   // Event places data from server
   var eventPlaces = Object.values(data);
-  // console.log(eventPlaces); 
+  console.log(eventPlaces); 
 
   // Exit out of function if no search results
   if (eventPlaces.length == 0) {
@@ -144,7 +144,7 @@ function setEventMarkers(data, map) {
   // Add a marker and info window to each event place
   for (var i = 0; i < eventPlaces.length; i++) {
     var place = eventPlaces[i]; 
-    console.log("Place:" + place);
+    // console.log("Place:" + place);
 
     // Skips over the place if position empty
     if (jQuery.isEmptyObject(place.position) || place.position.lat == 0 && place.position.lng == 0) {
@@ -157,7 +157,7 @@ function setEventMarkers(data, map) {
     else {
       var shortEventDescript = place.description.slice(0, 281); 
       contentString = '<div id="windowContent">' + 
-                      '<h3><a href="' + place.url + '" target="_blank">' + place.name + '</a></h3>' +
+                      '<h4><a href="' + place.url + '" target="_blank">' + place.name + '</a></h4>' +
                       '<strong>Group: </strong>' + place.group + '<br>' +
                       '<p><strong>' + place.datetime + '</strong></p>' + 
                       '<p>' + shortEventDescript + '...</p>' + 
@@ -170,8 +170,8 @@ function setEventMarkers(data, map) {
                                             'data-lng="' + place.position.lng + '"' +  
                                             'data-address="' + place.address + '"' +
                                             'data-cat="' + place.category + '"' +  
-                                            'data-src_id="mtup"' +                                                                               
-                                            '>add to favorites</button>'+
+                                            'data-src_id="mtup">' +                                                                               
+                                            'add to favorites</button>'+
                       '</div>';    
     // console.log(contentString);
     }
@@ -182,13 +182,14 @@ function setEventMarkers(data, map) {
     });
 
     var eventIcon = {
-        url: "/static/images/pin.svg",
+        url: "/static/images/coral_marker.svg",
         size: new google.maps.Size(71, 71), 
         origin: new google.maps.Point(0, 0),
         anchor: new google.maps.Point(17, 34), 
         scaledSize: new google.maps.Size(45, 45) 
       };
 
+    console.log(place.position);
     var eventMarker = new google.maps.Marker({
       map: map,
       title: place.name,
@@ -200,11 +201,13 @@ function setEventMarkers(data, map) {
     // Add marker to map
     markers.push(eventMarker);
 
+    // console.log(place.position);
+
     // Add event listener to marker to open info window
     eventMarker.addListener('click', function(evt) {
       placeInfowindow.setContent(this.infowindow);
       placeInfowindow.open( map, this )
-      var address = reverseGeocode(place.position.lat, place.position.lng);
+      // var address = reverseGeocode(place.position.lat, place.position.lng);
       // Saves the event details to variables when favorite button clicked
       $('.fave').click(function(evt){
         evt.preventDefault();
@@ -219,7 +222,8 @@ function setEventMarkers(data, map) {
           group_name: $(this).attr('data-group'),
           lat: lat,
           lng: lng,
-          address: address,
+          // address: address,
+          address: $(this).attr('data-address'),
           category: $(this).attr('data-cat'), 
           src_id: $(this).attr('data-src_id'), 
         };
@@ -254,7 +258,7 @@ function clearOldMarkers(markers) {
 function listEventsOnPage(eventPlaces) {
   // Full list of events on the bottom of the map
   var eventList = document.getElementById('evt-list');
-  console.log("events!" + eventList);
+  // console.log("events!" + eventList);
   var contentString = '';
   
   for (var i = 0; i < eventPlaces.length; i++) {
@@ -272,9 +276,9 @@ function listEventsOnPage(eventPlaces) {
                                             'data-lng="' + place.position.lng + '"' +  
                                             'data-address="' + place.address + '"' +
                                             'data-cat="' + place.category + '"' +  
-                                            'data-src_id="mtup"' +                                                                               
-                                            '>add to favorites</button><br>'+ 
-                        '<p class="evt-description">' + place.description + '</p><br>';
+                                            'data-src_id="mtup">' +                                                                               
+                                            'add to favorites</button>'+ 
+                        '<p class="evt-description">' + place.description + '</p>' + '<br><br>';
 
     contentString += evtString;
   }
@@ -294,8 +298,9 @@ function reverseGeocode(lat, lng) {
           async: false
   });
 
-  // console.log("This is an address" + address);
-  // console.log(address.responseJSON.results[0].formatted_address)
+  console.log("This is an address obj " + address);
+  // debugger;
+  console.log("This is an address " + address.responseJSON.results[0])
   return address.responseJSON.results[0].formatted_address;
 }
 
@@ -308,11 +313,3 @@ function updateHomebase() {
     });
   });
 }
-
-
-
-
-
-
-
-
