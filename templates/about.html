@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}About{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-xs-6 col-lg-6"> 
+    <h3>About BlockParty</h3>
+    <p>BlockParty is a web app that provides users a way to buildup the community around them. It's for people who want to engage with neighbors that share similar interests, such as hiking, playing boardgames, discussing books, and coding. By entering their "homebase," the user can search for upcoming public activities and events within their vicinity using Meetup and Eventbrite APIs. Event details, including name, time, description,  and link can be easily viewed geographically on a Google map or by date on a list. Users can login to save and view their favorite events, which is updated when events expire.</p>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-xs-6 col-lg-6"> 
+      <h3>About Me!</h3>
+      <p>Eileen arrived in the Bay Area from Chicago to pursue a Masters of Public Policy at the UC Berkeley, because she wanted to solve large social issues with pragmatic solutions. She found her calling in renewable energy, as a PM for solar PV projects and then at a battery storage start-up.  Working alongside engineers, she became enamored with building smart, data-driven software. She took on more technical responsibilities, and in her free time studied Python and Ruby. Now, she is beyond excited to transition to being a full-stack software engineer. Her sans-laptop life consists of wandering outdoors with her family, digging into creative projects, and feeding anyone under her roof.</p>
+    </div>
+    <div class="col-xs-6 col-lg-3"> 
+      <br><br>
+      <img id="profile-img" src="static/images/eileen_profile.jpg">
+    </div>
+    
+  </div>
+</div>
+{% endblock %}  
+
+{% block page_js %}
+
+  <script src="/static/js/faves.js"></script>
+
+{% endblock %}
