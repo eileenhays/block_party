@@ -68,7 +68,7 @@ def search_for_events():
     #         limit_results[k] = v
 
     # clean_data = Eventbrite_API.sanitize_data(limit_results)
-    # print clean_data
+
     return jsonify(clean_data)
 
 
