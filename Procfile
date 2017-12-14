@@ -1,1 +1,1 @@
-web: gunicorn blockparty-app:app
+web: gunicorn server:app
