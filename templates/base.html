@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Archivo+Black" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/style.css">
-    <link rel="icon" href="static/images/blockparty_logo_color.png">
+    <link rel="icon" href="static/images/logos_markers/blockparty_logo_color.png">
     {% block head %}{% endblock %}
 </head>
 
@@ -30,13 +30,12 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <img class="logo-header" alt="BlockParty" src="/static/images/blockparty_logo_color.png">
+          <img class="logo-header" alt="BlockParty" src="/static/images/logos_markers/blockparty_logo_color.png">
           <a class="navbar-brand" href="/">BlockParty</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li><a href="/about">About</a></li>
-            <li><a href="/favorites"><span class="glyphicon glyphicon-star" aria-hidden="true"></span>Favorites</a></li>
           </ul>
         
           <ul class="nav navbar-nav navbar-right">
@@ -49,7 +48,10 @@
                 {% endif %}</p><!-- 
                 </span> -->
             </li>
-            <li><button type="button" class="btn btn-default navbar-btn" id="login">Logout</button></li>
+
+            <li><button type="button" class="btn btn-default navbar-btn" id="login">Login</button></li>
+            <li><button type="button" class="btn btn-default navbar-btn" id="logout">Logout</button></li>
+            <li><button type="button" class="btn btn-default navbar-btn" id="register">Register</button></li>
           </ul>
         </div><!-- /.navbar-collapse -->
       </div><!-- /.container-fluid -->
@@ -78,7 +80,7 @@
 
     <div class="container-footer">
         <div>
-            <img id="footer-img" src="static/images/city-blocks.png" align="center"><br> 
+            <img id="footer-img" src="static/images/logos_markers/city-blocks.png" align="center"><br> 
             <span id="footer-msg">© Made with love by Eileen Hays-Schwantes, 2017<span>
         </div>
     </div>

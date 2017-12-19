@@ -44,6 +44,13 @@ def index():
     return render_template("map.html")
 
 
+@app.route('/landing')
+def render_landing():
+    """Landing page"""
+
+    return render_template("landing.html")
+    
+
 @app.route('/search-events')
 def search_for_events():
     """Request events from Meetup API and returns a JSON with local events."""
