@@ -74,7 +74,7 @@ function setPrimaryMarker(map, searchBox, markers) {
       }
 
       var primaryIcon = {
-        url: "/static/images/turqoise_marker.svg",
+        url: "/static/images/logos_markers/logos_markers/turqoise_marker.svg",
         size: new google.maps.Size(71, 71), 
         origin: new google.maps.Point(0, 0),
         anchor: new google.maps.Point(17, 34), 
@@ -182,7 +182,7 @@ function setEventMarkers(data, map) {
     });
 
     var eventIcon = {
-        url: "/static/images/coral_marker.svg",
+        url: "/static/images/logos_markers/coral_marker.svg",
         size: new google.maps.Size(71, 71), 
         origin: new google.maps.Point(0, 0),
         anchor: new google.maps.Point(17, 34), 
