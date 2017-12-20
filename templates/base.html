@@ -6,7 +6,7 @@
 
     <title>{% block title %}TITLE GOES HERE{% endblock %}</title>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Archivo+Black" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/style.css">
@@ -48,7 +48,7 @@
                 {% endif %}</p><!-- 
                 </span> -->
             </li>
-            <li><a href="/favorites">Favorites</a></li>
+            <li><a href="/favorites"><span class="glyphicon glyphicon-star"></span>Favorites</a></li>
             <li><button type="button" class="btn btn-default navbar-btn" id="login">Login</button></li>
             <li><button type="button" class="btn btn-default navbar-btn" id="logout">Logout</button></li>
             <li><button type="button" class="btn btn-default navbar-btn" id="register">Register</button></li>
@@ -86,8 +86,7 @@
     </div>
 
     <script src="https://code.jquery.com/jquery.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/
-      3.3.7/js/bootstrap.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script src="static/js/user-manage.js"></script>
 
     {% block page_js %}

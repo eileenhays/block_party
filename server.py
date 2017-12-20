@@ -49,7 +49,7 @@ def render_landing():
     """Landing page"""
 
     return render_template("landing.html")
-    
+
 
 @app.route('/search-events')
 def search_for_events():
@@ -127,7 +127,6 @@ def save_user_in_database():
     db.session.commit() 
 
     login_user(new_user)
-    session['Logged_in'] = True
 
     print "registration was successful and user logged in"
     flash("registration was successful and user logged in")
@@ -160,7 +159,6 @@ def check_login():
         # Login and validate the user.
         # user should be an instance of your `User` class
         login_user(user)
-        session['Logged_in'] = True
 
         flash('Login was successful')
 
@@ -180,10 +178,10 @@ def check_login():
 def logout():
     """Logs user out of their session"""
  
-    # session.clear()
     logout_user()
-    session['Logged_in'] = False
-    print session
+    session.clear()
+    print 'session', session
+
     flash("Logout successful!")
     return redirect('/')
 
@@ -312,7 +310,7 @@ def update_homebase_address():
 def autoload_homebase():
     """Returns homebase address to autopopulate"""
 
-    if session['Logged_in'] == True:
+    if 'user_id' in session:
         curr_user = User.query.filter_by(user_id=current_user.user_id).first()
         homebase_obj = Address.query.filter_by(addy_id=curr_user.addy_id).first()
         return homebase_obj.formatted_addy
