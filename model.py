@@ -5,6 +5,7 @@ from flask_login import UserMixin
 import os
 
 # Connect to the PostgreSQL database
+
 db = SQLAlchemy()
 
 # Model definitions
@@ -155,6 +156,7 @@ def connect_to_db(app):
 
     # Configure to PostgreSQL database
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
     db.app = app
     db.init_app(app)
 

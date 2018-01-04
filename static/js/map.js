@@ -37,7 +37,7 @@ function initAutocomplete() {
   $.get("/homebase-in-session")
       .done(function(address) {
             console.log("returned_address " + address);
-            if (address !== "False") {
+            if (address !== 'None') {
               input.value = address;
             }
       });

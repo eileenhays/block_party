@@ -21,9 +21,9 @@ from sqlalchemy import and_
 
 
 app = Flask(__name__)
+# Moved to server, b/c of key error
 app.secret_key = "ABC"
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
+connect_to_db(app)
 
 # Raises an error in Jinja
 app.jinja_env.undefined = StrictUndefined
@@ -81,7 +81,6 @@ def search_for_events():
 
 
 @app.route('/about')
-@login_required
 def render_about_page():
     """Shows about page""" 
 
@@ -113,16 +112,14 @@ def save_user_in_database():
     del regis_pw_input    
 
     # Add address record in DB 
-    if session != None:
+    if 'lat' and 'lng' in session:
         new_address = Address(lat=session["lat"], lng=session["lng"], formatted_addy=session["address"])
         db.session.add(new_address)
         db.session.flush()
-
-    # Add user record in DB 
-    if new_address.addy_id:
+        # Add user record in DB 
         new_user = User(name=name, email=email, password=hashed_pw, addy_id=new_address.addy_id)
     else:
-        new_user = User(name=name, email=email, password=hashed_pw)
+        new_user = User(name=name, email=email, password=hashed_pw, addy_id=None)
 
     db.session.add(new_user)
     db.session.commit() 
@@ -311,12 +308,13 @@ def update_homebase_address():
 def autoload_homebase():
     """Returns homebase address to autopopulate"""
 
-    if 'user_id' in session:
-        curr_user = User.query.filter_by(user_id=current_user.user_id).first()
-        homebase_obj = Address.query.filter_by(addy_id=curr_user.addy_id).first()
+    curr_user = User.query.filter_by(user_id=current_user.user_id).first()
+    homebase_obj = Address.query.filter_by(addy_id=curr_user.addy_id).first()
+
+    if homebase_obj is not None:
         return homebase_obj.formatted_addy
     else:
-        return "False"
+        return 'None'
 
 
 @app.route('/search-events-eb')
@@ -362,7 +360,7 @@ if __name__ == "__main__":
     app.debug = True
     app.jinja_env.auto_reload = app.debug  # make sure templates, etc. are not cached in debug mode
 
-    connect_to_db(app)
+    # connect_to_db(app)
 
     # Use the DebugToolbar
     # DebugToolbarExtension(app)
