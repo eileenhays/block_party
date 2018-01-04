@@ -22,6 +22,7 @@ from sqlalchemy import and_
 
 app = Flask(__name__)
 app.secret_key = "ABC"
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
 # Raises an error in Jinja

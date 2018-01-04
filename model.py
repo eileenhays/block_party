@@ -5,7 +5,6 @@ from flask_login import UserMixin
 import os
 
 # Connect to the PostgreSQL database
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy()
 
 # Model definitions
