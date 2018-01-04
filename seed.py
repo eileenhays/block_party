@@ -1,5 +1,5 @@
 
-"""Utility file to seed community score database from various sources"""
+"""Utility file to seed database from various sources"""
 
 from sqlalchemy import func
 from model import connect_to_db, db, Address, User, Category, User_saved_event, Source  #<import classes>
@@ -133,14 +133,9 @@ def set_val_user_id():
 
 
 if __name__ == "__main__":
-    # connect_to_db(app)
-
-    # # In case tables haven't been created, create them
-    # db.create_all()
+    connect_to_db(app)
 
     # Import different types of data
     load_sources()
     load_categories()
-    # load_addresses()
-    # load_users()
     # set_val_user_id()
