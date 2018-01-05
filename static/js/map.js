@@ -134,7 +134,7 @@ function searchWithPrimaryLocation(places) {
 function setEventMarkers(data, map) {
   // Event places data from server
   var eventPlaces = Object.values(data);
-  console.log(eventPlaces); 
+  // console.log(eventPlaces); 
 
   // Exit out of function if no search results
   if (eventPlaces.length == 0) {
@@ -144,7 +144,7 @@ function setEventMarkers(data, map) {
   // Add a marker and info window to each event place
   for (var i = 0; i < eventPlaces.length; i++) {
     var place = eventPlaces[i]; 
-    console.log("Place:" + place); //erase afterward
+    // console.log("Place:" + place); 
 
     // Skips over the place if position empty
     if (jQuery.isEmptyObject(place.position) || place.position.lat == 0 && place.position.lng == 0) {

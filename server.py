@@ -66,12 +66,13 @@ def search_for_events():
     session["lng"] = lng
     print session
 
-    # raw_data = Meetup_API.find_events(lat, lng)
-    # clean_data = Meetup_API.sanitize_data(raw_data)
-
-    results = Eventbrite_API.find_events(lat, lng)
-    clean_data = Eventbrite_API.sanitize_data(results)
-    print "clean data", clean_data
+    # Meetup query
+    mtup_data = Meetup_API.find_events(lat, lng)
+    clean_data = Meetup_API.sanitize_data(mtup_data)
+    # Eventbrite query
+    eb_data = Eventbrite_API.find_events(lat, lng)
+    clean_eb_data = Eventbrite_API.sanitize_data(eb_data)
+    clean_data.update(clean_eb_data)
 
     return jsonify(clean_data)
 
@@ -151,7 +152,6 @@ def check_login():
 
     if bcrypt.verify(request.form.get("password"), password):
         # Login and validate the user.
-        # user should be an instance of your `User` class
         login_user(user)
 
         flash('Login was successful')
