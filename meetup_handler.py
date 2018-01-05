@@ -27,7 +27,6 @@ class Meetup_API(object):
                    'lon': lng, 
                    'radius': search_radius,
                    'page': num_of_results,
-                   # 'text_format': 'plain',
                    'status': 'upcoming'}
 
         response = requests.get(cls.MEETUP_EVENT_URL, params=payload)
@@ -71,10 +70,6 @@ class Meetup_API(object):
 
         return map_events
 
-# def meetup_search_event(evt_id):
-#     """"Parses out relevant data from the Meetup API response, and 
-#     dumps clean event info into JSON."""
-
 #static method??? 
 def convert_datetime_from_epoch(ms_from_epoch):
     """Format date time from time from epoch to human readable"""
@@ -99,18 +94,6 @@ def end_time(start_time, ms_duration):
     formatted_end_time = end_time.strfttime('%H:%M %Z')
 
     return formatted_end_time
-
-# class MeetupAPI(object):
-#     self._url = "..."
-
-#     @classmethod
-#     def open_events(cls, lat, lng, api_key)
-#         returns processed open_events
-#         ... meetup_api_call stuff
-#         return cls._sanitize_event_data(meetup_api_call_data)
-
-#     @classmethod
-#     def _sanitize_event_data
 
 ## Notes if you want to init a new MeetupAPI object (for creating a new event) ###
  # x = MeetupAPI()

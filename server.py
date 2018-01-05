@@ -3,6 +3,7 @@
 from jinja2 import StrictUndefined
 from flask import (Flask, jsonify, render_template, redirect, request,
                    flash, session, abort, url_for)
+from flask_cache import Cache
 from flask_debugtoolbar import DebugToolbarExtension
 
 #libraries for API requests
@@ -21,7 +22,7 @@ from sqlalchemy import and_
 
 
 app = Flask(__name__)
-# Moved to server, b/c of key error
+cache = Cache(app,config={'CACHE_TYPE': 'simple'})
 app.secret_key = "ABC"
 connect_to_db(app)
 
@@ -65,17 +66,12 @@ def search_for_events():
     session["lng"] = lng
     print session
 
-    raw_data = Meetup_API.find_events(lat, lng)
-    clean_data = Meetup_API.sanitize_data(raw_data)
+    # raw_data = Meetup_API.find_events(lat, lng)
+    # clean_data = Meetup_API.sanitize_data(raw_data)
 
-    # results = Eventbrite_API.find_events(lat, lng)
-    # limit_results = {}
-
-    # while len(limit_results) <= 10:
-    #     for k, v in results:
-    #         limit_results[k] = v
-
-    # clean_data = Eventbrite_API.sanitize_data(limit_results)
+    results = Eventbrite_API.find_events(lat, lng)
+    clean_data = Eventbrite_API.sanitize_data(results)
+    print "clean data", clean_data
 
     return jsonify(clean_data)
 
@@ -308,28 +304,13 @@ def update_homebase_address():
 def autoload_homebase():
     """Returns homebase address to autopopulate"""
 
-    curr_user = User.query.filter_by(user_id=current_user.user_id).first()
-    homebase_obj = Address.query.filter_by(addy_id=curr_user.addy_id).first()
+    if 'user_id' in session:
+        curr_user = User.query.filter_by(user_id=current_user.user_id).first()
+        homebase_obj = Address.query.filter_by(addy_id=curr_user.addy_id).first()
 
-    if homebase_obj is not None:
-        return homebase_obj.formatted_addy
-    else:
-        return 'None'
-
-
-@app.route('/search-events-eb')
-def find_eb_events():
-    """Search for events in Eventbrite and returns sanitized data"""
-
-    lat = 37.7893921
-    lng = -122.40775389999999
-
-    results = Eventbrite_API.find_events(lat, lng)
-    clean_data = Eventbrite_API.sanitize_data(results)
-
-    return render_template("evt_analysis.html",
-                           # data=pformat(data),
-                           results=clean_data)
+        if homebase_obj is not None:
+            return homebase_obj.formatted_addy
+    return 'None'
 
 
 # @app.route('/date-sort', methods=["POST"])

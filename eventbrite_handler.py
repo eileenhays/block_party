@@ -41,10 +41,11 @@ class Eventbrite_API(object):
         # If the response was successful (with a status code of less than 400),
         # use the list of events from the returned JSON
         if response.ok:
-            events = data['events']
+            all_events = data['events']
+            events = all_events[:10] # returns the first 10 responses
         # If there was an error (status code between 400 and 600), use an empty list
         else:
-            flash(":( No parties: " + data['error_description'])
+            flash("Error: " + data['error_description'])
             events = []
 
         return events
@@ -113,8 +114,8 @@ class Eventbrite_API(object):
                 # event_dict['format'] = event['format_id'] ##
                 event_dict['position'] = {}     
                 address_data = cls.find_address(event['venue_id'])  
-                event_dict['position']['lat'] = address_data['latitude'] 
-                event_dict['position']['lng'] = address_data['longitude']
+                event_dict['position']['lat'] = float(address_data['latitude']) 
+                event_dict['position']['lng'] = float(address_data['longitude'])
                 #   if 'address' in position_data:
                 event_dict['address'] = address_data['address']['localized_address_display']
                 

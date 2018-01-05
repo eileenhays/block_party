@@ -144,7 +144,7 @@ function setEventMarkers(data, map) {
   // Add a marker and info window to each event place
   for (var i = 0; i < eventPlaces.length; i++) {
     var place = eventPlaces[i]; 
-    // console.log("Place:" + place);
+    console.log("Place:" + place); //erase afterward
 
     // Skips over the place if position empty
     if (jQuery.isEmptyObject(place.position) || place.position.lat == 0 && place.position.lng == 0) {
