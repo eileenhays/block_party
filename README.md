@@ -23,20 +23,20 @@ APIs: Google Maps Javascript V3, Meetup, and Eventbrite
 ### Homepage and Event Map
 By entering their "homebase address," users search for upcoming public activities and events within their vicinity from Meetup and Eventbrite. Event details, including name, time, description, and link can be easily viewed geographically on a Google map. 
 
-<iframe src='//gifs.com/embed/blockparty-event-map-E9WEv4' frameborder='0' scrolling='no' width='1212px' height='670px' style='-webkit-backface-visibility: hidden;-webkit-transform: scale(1);' ></iframe>
+![Homepage and Event Map](https://gifs.com/gif/blockparty-event-map-E9WEv4)
 
 ### Community Events List
 Users can also scroll down to view the same events listed and add events to Favorites.
 
-<iframe src='//gifs.com/embed/blockparty-event-list-kZXklv' frameborder='0' scrolling='no' width='1214px' height='758px' style='-webkit-backface-visibility: hidden;-webkit-transform: scale(1);' ></iframe>
+![Community Event List](https://gifs.com/gif/blockparty-event-list-kZXklv)
 
 ### Favorites Page
 Users can login to save and view their favorite events later, which is updated when events expire.
 
-<iframe src='//gifs.com/embed/blockparty-favorites-D9WDAk' frameborder='0' scrolling='no' width='1214px' height='758px' style='-webkit-backface-visibility: hidden;-webkit-transform: scale(1);' ></iframe>
+![Favorites Page](https://gifs.com/gif/blockparty-favorites-D9WDAk)
 
 ## Forking Project
-Get your own API keys for Google Maps, Meetup, and Eventbrite.
+You need to have your own API keys for Google Maps, Meetup, and Eventbrite. 
 
 ```python
 pip install -r requirements.txt
