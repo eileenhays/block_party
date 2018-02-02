@@ -23,12 +23,13 @@ APIs: Google Maps Javascript V3, Meetup, and Eventbrite
 ### Homepage and Event Map
 By entering their "homebase address," users search for upcoming public activities and events within their vicinity from Meetup and Eventbrite. Event details, including name, time, description, and link can be easily viewed geographically on a Google map. 
 
-![Homepage and Event Map](https://j.gifs.com/E9WEv4.gif)
+![Map of Search Events](https://j.gifs.com/zKYj72.gif)
+![Event Details Pop-up](https://j.gifs.com/7LVKXB.gif)
 
 ### Community Events List
 Users can also scroll down to view the same events listed and add events to Favorites.
 
-![Community Event List](https://j.gifs.com/kZXklv.gif)
+![Community Event List](https://j.gifs.com/BL90no.gif)
 
 ### Favorites Page
 Users can login to save and view their favorite events later, which is updated when events expire.
