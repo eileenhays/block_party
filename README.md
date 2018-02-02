@@ -6,7 +6,7 @@ Built by Eileen Hays-Schwantes
 ## Overview
 Moved to a new city or neighborhood? Bored and want to find something random to do? Ready to expand your social network IRL? 
 
-BlockParty is a web app that enables users to engage with their community through real social interaction with their neighbors. The user can input their address and interactively showcase dynamic events in their neighborhood on a map and save or remove favorite events.
+BlockParty is a web app that enables users to engage with their community through real social interaction with their neighbors. The user can input their address and interactively showcase events in their neighborhood on a map or listed, and save favorite events.
 
 ## Tech Stack
 Backend: Python, Flask, SQLAlchemy, PostgreSQL, bcrypt (encryption)
@@ -29,7 +29,7 @@ By entering their "homebase address," users search for upcoming public activitie
 ### Community Events List
 Users can also scroll down to view the same events listed and add events to Favorites.
 
-![Community Event List](https://j.gifs.com/BL90no.gif)
+![Events List](https://j.gifs.com/BL90no.gif)
 
 ### Favorites Page
 Users can login to save and view their favorite events later, which is updated when events expire.
