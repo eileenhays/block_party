@@ -23,17 +23,17 @@ APIs: Google Maps Javascript V3, Meetup, and Eventbrite
 ### Homepage and Event Map
 By entering their "homebase address," users search for upcoming public activities and events within their vicinity from Meetup and Eventbrite. Event details, including name, time, description, and link can be easily viewed geographically on a Google map. 
 
-![Homepage and Event Map](https://gifs.com/gif/blockparty-event-map-E9WEv4)
+![Homepage and Event Map](https://j.gifs.com/E9WEv4.gif)
 
 ### Community Events List
 Users can also scroll down to view the same events listed and add events to Favorites.
 
-![Community Event List](https://gifs.com/gif/blockparty-event-list-kZXklv)
+![Community Event List](https://j.gifs.com/kZXklv.gif)
 
 ### Favorites Page
 Users can login to save and view their favorite events later, which is updated when events expire.
 
-![Favorites Page](https://gifs.com/gif/blockparty-favorites-D9WDAk)
+![Favorites Page](https://j.gifs.com/D9WDAk.gif)
 
 ## Forking Project
 You need to have your own API keys for Google Maps, Meetup, and Eventbrite. 
